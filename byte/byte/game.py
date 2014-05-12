@@ -4,6 +4,7 @@ import pygame
 
 import Board
 import Player
+import Zombie
 import settings
 import utilities
 from utilities import log
@@ -24,19 +25,23 @@ class Game:
         Start the game and then pass control to the main loop. Open the window, put everything in the
         needed position and start the game loop.
         """
+        self.dirty_rects = []
+        
         #Initialize pygame window:
         self.screen = pygame.display.set_mode(settings.SCREEN_SIZE, 0)
         
         self.board = Board.Board(self)
         self.screen.blit(self.board.unmasked_image, self.board.rect)
         self.screen.blit(self.board.image, self.board.rect)
-        
 
-        
         self.player = Player.Player(self)
         self.screen.blit(self.player.image, self.player.rect)
         
-        self.dirty_rects = []
+        self.zombies = [Zombie.Zombie(self)]
+        for i in self.zombies:
+            i.turn(*self.player.rect.center)
+            self.screen.blit(i.image, i.rect)
+        
         
         pygame.display.update()
         self.main_loop()
@@ -61,7 +66,11 @@ class Game:
             self.screen.fill((0,0,0))
             self.screen.blit(self.board.unmasked_image, self.board.rect)
             self.screen.blit(self.board.image, self.board.rect)
+            
             self.screen.blit(self.player.image, self.player.rect)
+            for i in self.zombies:
+                self.screen.blit(i.image, i.rect)
+            
             
             
             if self.dirty_rects and settings.ONLY_BLIT_DIRTY_RECTS:
@@ -72,7 +81,7 @@ class Game:
             
             self.dirty_rects = []
 
-            #print self.clock.get_fps()
+            print self.clock.get_fps()
 
 
         
@@ -82,6 +91,12 @@ class Game:
         The player initial position is probably the center. Mostly?
         """
         return self.screen.get_rect().center
+
+    def get_zombie_spawn(self):
+        """
+        Get a place to spawn a zombie.
+        """
+        return (100, 100)
     
     
 
