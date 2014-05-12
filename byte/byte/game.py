@@ -29,6 +29,8 @@ class Game:
         
         #Initialize pygame window:
         self.screen = pygame.display.set_mode(settings.SCREEN_SIZE, 0)
+        pygame.mouse.set_cursor(*pygame.cursors.broken_x)
+
         
         self.board = Board.Board(self)
         self.screen.blit(self.board.unmasked_image, self.board.rect)
@@ -59,17 +61,34 @@ class Game:
                     log("Player exited!")
                     return
                 
+                if event.type == pygame.MOUSEBUTTONUP:
+                    mouse_pos = pygame.mouse.get_pos()
+                    self.player.shoot(*mouse_pos)
+                    for i in self.zombies:
+                        if i.rect.collidepoint(mouse_pos):
+                            i.die()
+                    
+                            
             mouse_x, mouse_y = pygame.mouse.get_pos()
             self.player.turn(mouse_x, mouse_y)
             self.board.unmask(mouse_x, mouse_y)
             
             self.screen.fill((0,0,0))
+            
             self.screen.blit(self.board.unmasked_image, self.board.rect)
+            
             self.screen.blit(self.board.image, self.board.rect)
             
-            self.screen.blit(self.player.image, self.player.rect)
+            self.zombies = [i for i in self.zombies if not i.dead]
             for i in self.zombies:
+                i.turn(*self.player.rect.center)
+                i.step(*self.player.rect.center)
                 self.screen.blit(i.image, i.rect)
+            
+            
+            
+            self.screen.blit(self.player.image, self.player.rect)
+            
             
             
             
@@ -81,7 +100,7 @@ class Game:
             
             self.dirty_rects = []
 
-            print self.clock.get_fps()
+            #print self.clock.get_fps()
 
 
         

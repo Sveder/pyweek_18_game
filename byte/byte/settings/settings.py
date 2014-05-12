@@ -25,14 +25,17 @@ else:
     SHOOTER_BG_ALPHA = 70
     
 
+SIMPLE_ZOMBIE_STEP = 1
 
 
 #-------------------------------------------------------------------------------
 #File/Path parameters:
 #-------------------------------------------------------------------------------
 IMAGE_FOLDER = "images"
+SOUND_FOLDER = "sounds"
 
 PLAYER_IMAGE_PATH_FORMAT = os.path.join(IMAGE_FOLDER, "player", "player_%s.png")
+PLAYER_SHOT_SOUND = os.path.join(SOUND_FOLDER, "shot.mp3")
 
 MASKED_BG_IMAGE_PATH = os.path.join(IMAGE_FOLDER, "masked_bg.jpg")
 UNMASKED_BG_IMAGE_PATH = os.path.join(IMAGE_FOLDER, "unmasked_bg.jpg")
