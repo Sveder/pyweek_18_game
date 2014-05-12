@@ -18,6 +18,8 @@ BACKGROUND_FILL_COLOR  = (0 , 0 , 50)
 SCREEN_SIZE = (800 , 600)                   #The size of the game window
 
 
+SHOOTER_BG_ALPHA = 70
+
 
 #-------------------------------------------------------------------------------
 #File/Path parameters:
@@ -25,3 +27,4 @@ SCREEN_SIZE = (800 , 600)                   #The size of the game window
 IMAGE_FOLDER = "images"
 
 PLAYER_IMAGE_PATH_FORMAT = os.path.join(IMAGE_FOLDER, "player", "player_%s.png")
+BG_IMAGE_PATH = os.path.join(IMAGE_FOLDER, "background.jpg")

@@ -2,6 +2,7 @@ import data
 
 import pygame
 
+import Board
 import Player
 import settings
 import utilities
@@ -25,7 +26,10 @@ class Game:
         """
         #Initialize pygame window:
         self.screen = pygame.display.set_mode(settings.SCREEN_SIZE, 0)
-        self.screen.fill(settings.BACKGROUND_FILL_COLOR)
+        
+        self.board = Board.Board(self)
+        self.screen.blit(self.board.image, self.board.rect)
+
         
         self.player = Player.Player(self)
         self.screen.blit(self.player.image, self.player.rect)
@@ -40,7 +44,6 @@ class Game:
         """
         The main loop of the game, where most of the fun happens.
         """
-        
         while 1:
             self.clock.tick()
             
@@ -50,16 +53,17 @@ class Game:
                     return
                 
             self.turn_player_towards_mouse()
-            
-            self.screen.fill(settings.BACKGROUND_FILL_COLOR)
+            self.screen.blit(self.board.image, self.board.rect)
             self.screen.blit(self.player.image, self.player.rect)
             
-            pygame.display.update()
+            if self.dirty_rects:
+                pygame.display.update(self.dirty_rects)
             
             
             self.dirty_rects = []
 
-            
+            print self.clock.get_fps()
+
 
 
 
