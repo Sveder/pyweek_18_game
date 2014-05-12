@@ -9,7 +9,7 @@ import traceback
 
 g_open_log_file = None
 
-def load_image(path):
+def load_image(path, convert=True):
     """
     Loads the image and returns it and it's rect.
     """
@@ -19,6 +19,9 @@ def load_image(path):
     
     #Load the image and return the needed values:
     image = pygame.image.load(path)
+    if convert:
+        image = image.convert()
+        
     rect = image.get_rect()
     return image , rect
 

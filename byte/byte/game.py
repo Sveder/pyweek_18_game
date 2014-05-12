@@ -52,12 +52,19 @@ class Game:
                     log("Player exited!")
                     return
                 
-            self.turn_player_towards_mouse()
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            self.player.turn(mouse_x, mouse_y)
+            self.board.unmask(mouse_x, mouse_y)
+            
+            self.screen.fill((0,0,0))
             self.screen.blit(self.board.image, self.board.rect)
             self.screen.blit(self.player.image, self.player.rect)
             
-            if self.dirty_rects:
+            
+            if self.dirty_rects and settings.ONLY_BLIT_DIRTY_RECTS:
                 pygame.display.update(self.dirty_rects)
+            else:
+                pygame.display.update()
             
             
             self.dirty_rects = []
@@ -65,16 +72,6 @@ class Game:
             print self.clock.get_fps()
 
 
-
-
-            
-        
-    def turn_player_towards_mouse(self):
-        """
-        Turn the player sprite towards the mouse.
-        """
-        mouse_x, mouse_y = pygame.mouse.get_pos()
-        self.player.turn(mouse_x, mouse_y)
         
     
     def get_player_start_position(self):

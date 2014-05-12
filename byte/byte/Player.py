@@ -28,6 +28,7 @@ class Player(pygame.sprite.Sprite):
         self.angle_pictures = []
         for i in xrange(365):
             image, _ = utilities.load_image(data.filepath(image_file_path % i))
+            image.set_colorkey((255, 255, 255))
             self.angle_pictures.append(image)
         
         self._cur_angle = 0
