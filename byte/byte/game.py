@@ -28,7 +28,9 @@ class Game:
         self.screen = pygame.display.set_mode(settings.SCREEN_SIZE, 0)
         
         self.board = Board.Board(self)
+        self.screen.blit(self.board.unmasked_image, self.board.rect)
         self.screen.blit(self.board.image, self.board.rect)
+        
 
         
         self.player = Player.Player(self)
@@ -57,6 +59,7 @@ class Game:
             self.board.unmask(mouse_x, mouse_y)
             
             self.screen.fill((0,0,0))
+            self.screen.blit(self.board.unmasked_image, self.board.rect)
             self.screen.blit(self.board.image, self.board.rect)
             self.screen.blit(self.player.image, self.player.rect)
             
@@ -69,7 +72,7 @@ class Game:
             
             self.dirty_rects = []
 
-            print self.clock.get_fps()
+            #print self.clock.get_fps()
 
 
         

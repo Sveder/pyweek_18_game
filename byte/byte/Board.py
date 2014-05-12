@@ -27,20 +27,46 @@ class Board(pygame.sprite.Sprite):
         self.masked_image, _= utilities.load_image(data.filepath(settings.MASKED_BG_IMAGE_PATH))
         
         self.image = self.masked_image.copy()
+        self.image.set_colorkey((255, 255,0))
+        
         self.last_brighten = (0, 0)
+    
     
     def unmask(self, near_x, near_y):
         """
         Brighten (unmask) the area near the given coordinates.
         """
         self._actual_unmask(self.last_brighten, self.masked_image)        
-        self._actual_unmask((near_x, near_y), self.unmasked_image)
-    
+        
+        #self._actual_unmask((near_x, near_y), self.unmasked_image)
+        brighten_rect = pygame.draw.circle(self.image, (255, 255,0), (near_x, near_y), HALF_RECT_TEMP)
+        self.game.dirty_rects.append(brighten_rect)
+        
         self.last_brighten = (near_x, near_y)
     
 
     def _actual_unmask(self, (near_x, near_y), surface):
         rect = pygame.Rect(near_x - HALF_RECT_TEMP, near_y - HALF_RECT_TEMP, BRIGHTEN_RECT_TEMP, BRIGHTEN_RECT_TEMP)
+        
+        
         self.image.blit(surface, rect, rect)
+        
+        
         self.game.dirty_rects.append(rect)
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
