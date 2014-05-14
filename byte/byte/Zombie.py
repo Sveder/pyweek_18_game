@@ -14,7 +14,7 @@ class Zombie(Actor.Actor):
     This is the base class of the Zombie.
     BRAINSSSSSSS
     """
-    def __init__(self, game):
+    def __init__(self, game, name="OnlyZombieForNow"):
         """
         Initialize the zombie parameters.
         """
@@ -23,12 +23,14 @@ class Zombie(Actor.Actor):
         self.dead = False
         self.dying = False
         self.how_dead = 0
+        self.name = name
         
     
     def die(self):
         """
         Oh no I'm dead.
         """
+        utilities.log("%s has been shot!" % self.name)
         self.dying = True
     
     def step(self, toward_x, toward_y):
@@ -42,7 +44,7 @@ class Zombie(Actor.Actor):
                 self.dead = True
             
             return
-        
+                
         new_x = self.rect.center[0]
         if toward_x > self.rect.center[0]:
             new_x = (self.rect.center[0] + settings.SIMPLE_ZOMBIE_STEP)

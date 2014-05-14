@@ -1,7 +1,8 @@
 import game
 
 def main():
-    game.start()
+    game.server_start()
+    
     
     
     

@@ -27,6 +27,10 @@ else:
 
 SIMPLE_ZOMBIE_STEP = 1
 
+ROLE_NONE = 0
+ROLE_SHOOTER = 1
+ROLE_LIGHTER = 2
+
 
 #-------------------------------------------------------------------------------
 #File/Path parameters:
@@ -44,3 +48,19 @@ ZOMBIE_FOLDER = os.path.join(IMAGE_FOLDER, "zombies")
 
 SIMPLE_ZOMBIE_FOLDER = os.path.join(ZOMBIE_FOLDER, "simple")
 SIMPLE_ZOMBIE_PATH_FORMAT = os.path.join(SIMPLE_ZOMBIE_FOLDER, "simple_%s.png")
+
+
+#-------------------------------------------------------------------------------
+#Net parameters:
+#-------------------------------------------------------------------------------
+
+NET_MAGIC_HEADER_SERVER = "server_header0.0>>>"
+NET_MAGIC_HEADER_CLIENT = "client_header0.0>>>"
+
+NET_MSG_ZOMBIE_CREATED = 1
+NET_MSG_FLASHLIGHT = 2
+NET_MSG_SHOT_FIRED = 3
+
+
+
+

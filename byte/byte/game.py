@@ -1,16 +1,23 @@
 import data
+import threading
 
 import pygame
+import Mastermind
 
 import Board
 import Player
 import Zombie
+import net_code
 import settings
 import utilities
 from utilities import log
 
+ip = "localhost"
+port = 6317
+
+
 class Game:
-    def __init__(self):
+    def __init__(self, host, port, is_server=True, role=settings.ROLE_LIGHTER):
         """
         Initialize the game objects and pygame.
         """
@@ -19,7 +26,40 @@ class Game:
         self.clock = pygame.time.Clock()
         self.screen = None
         
+        self.event_list_lock = threading.Lock()
+        self.event_list = []
+        
+        self.role = role
+        
+        self.host = host
+        self.port = port
+        self.is_server = is_server
+        
+        if is_server:
+            self.net_object = net_code.Server()
+            self.net_thread = threading.Thread(target=self.net_object.start, args=[self])
+            self.net_thread.start()
+        else:
+            self.net_object = net_code.Client()
+            self.net_thread = threading.Thread(target=self.net_object.connect, args=[self])
+            self.net_thread.start()
             
+        
+        
+        
+
+    def create_player(self):
+        if self.role == settings.ROLE_LIGHTER:
+            self.player = Player.Lighter(self)
+        elif self.role == settings.ROLE_SHOOTER:
+            self.player = Player.Shooter(self)
+        else:
+            raise Exception("Role is not a valid player role: %s." % self.role)
+        
+        log("Initialized a game with role: %s" % self.role)
+        
+        
+    
     def start(self):
         """
         Start the game and then pass control to the main loop. Open the window, put everything in the
@@ -30,24 +70,33 @@ class Game:
         #Initialize pygame window:
         self.screen = pygame.display.set_mode(settings.SCREEN_SIZE, 0)
         pygame.mouse.set_cursor(*pygame.cursors.broken_x)
+        
+        self.create_player()
 
         
         self.board = Board.Board(self)
         self.screen.blit(self.board.unmasked_image, self.board.rect)
         self.screen.blit(self.board.image, self.board.rect)
 
-        self.player = Player.Player(self)
+        
         self.screen.blit(self.player.image, self.player.rect)
         
         self.zombies = [Zombie.Zombie(self)]
         for i in self.zombies:
             i.turn(*self.player.rect.center)
-            self.screen.blit(i.image, i.rect)
         
         
         pygame.display.update()
         self.main_loop()
         
+    
+    def render_zombies(self):
+        self.zombies = [i for i in self.zombies if not i.dead]
+        for i in self.zombies:
+            i.turn(*self.player.rect.center)
+            ########i.step(*self.player.rect.center)
+            self.screen.blit(i.image, i.rect)
+    
     
     def main_loop(self):
         """
@@ -61,32 +110,46 @@ class Game:
                     log("Player exited!")
                     return
                 
-                if event.type == pygame.MOUSEBUTTONUP:
+                if self.role == settings.ROLE_SHOOTER and event.type == pygame.MOUSEBUTTONUP:
                     mouse_pos = pygame.mouse.get_pos()
                     self.player.shoot(*mouse_pos)
+                    
+                    self.net_object.send_event(net_code.ShotFired(mouse_pos))
+                    
                     for i in self.zombies:
                         if i.rect.collidepoint(mouse_pos):
                             i.die()
+                            
+            with self.event_list_lock:
+                for event in self.event_list:
+                    print "------>", event
+                    if event.msg_type == settings.NET_MSG_SHOT_FIRED:
+                        self.player.shoot(*event.where)
+                        for i in self.zombies:
+                            if i.rect.collidepoint(*event.where):
+                                i.die()
+                
+                self.event_list = []
+                
                     
                             
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            self.player.turn(mouse_x, mouse_y)
-            self.board.unmask(mouse_x, mouse_y)
+            
+            if self.role == settings.ROLE_LIGHTER:
+                self.board.unmask(mouse_x, mouse_y)
             
             self.screen.fill((0,0,0))
-            
             self.screen.blit(self.board.unmasked_image, self.board.rect)
             
+            if self.role == settings.ROLE_SHOOTER:
+                self.render_zombies()
+                
             self.screen.blit(self.board.image, self.board.rect)
             
-            self.zombies = [i for i in self.zombies if not i.dead]
-            for i in self.zombies:
-                i.turn(*self.player.rect.center)
-                i.step(*self.player.rect.center)
-                self.screen.blit(i.image, i.rect)
+            if self.role == settings.ROLE_LIGHTER:
+                self.render_zombies()
             
-            
-            
+            self.player.turn(mouse_x, mouse_y)
             self.screen.blit(self.player.image, self.player.rect)
             
             
@@ -119,8 +182,14 @@ class Game:
     
     
 
-def start():
-    utilities.log("Game started!")
-    game = Game()
+def server_start():
+    utilities.log("Game started as SERVER!")
+    game = Game("0.0.0.0", 12345, True, role = settings.ROLE_LIGHTER)
+    game.start()
+    utilities.log("Game ended!")
+    
+def client_start():
+    utilities.log("Game started as CLIENT!")
+    game = Game("localhost", 12345, False, role = settings.ROLE_SHOOTER)
     game.start()
     utilities.log("Game ended!")
