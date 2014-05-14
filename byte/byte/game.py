@@ -25,29 +25,30 @@ class Game:
         self.clock = pygame.time.Clock()
         self.screen = None
         
-        self.event_list_lock = threading.Lock()
+        #Remote server communicates using sockets and the net code adds events to this list:
         self.event_list = []
+        self.event_list_lock = threading.Lock()
         
         self.role = role
-        
         self.host = host
         self.port = port
         self.is_server = is_server
         
+        #This will definitely move soon:
         if is_server:
             self.net_object = net_code.Server()
             self.net_thread = threading.Thread(target=self.net_object.start, args=[self])
-            self.net_thread.start()
         else:
             self.net_object = net_code.Client()
             self.net_thread = threading.Thread(target=self.net_object.connect, args=[self])
-            self.net_thread.start()
+        
+        self.net_thread.start()
             
         
-        
-        
-
     def create_player(self):
+        """
+        Figure out which role the player is and initiate the right class.
+        """
         if self.role == settings.ROLE_LIGHTER:
             self.player = Player.Lighter(self)
         elif self.role == settings.ROLE_SHOOTER:
@@ -58,7 +59,6 @@ class Game:
         log("Initialized a game with role: %s" % self.role)
         
         
-    
     def start(self):
         """
         Start the game and then pass control to the main loop. Open the window, put everything in the
@@ -68,22 +68,21 @@ class Game:
         
         #Initialize pygame window:
         self.screen = pygame.display.set_mode(settings.SCREEN_SIZE, 0)
-        pygame.mouse.set_cursor(*pygame.cursors.broken_x)
+        self.set_caption()
+        
+        if self.role == settings.ROLE_SHOOTER:
+            pygame.mouse.set_cursor(*pygame.cursors.broken_x)
         
         self.create_player()
-
         
         self.board = Board.Board(self)
         self.screen.blit(self.board.unmasked_image, self.board.rect)
         self.screen.blit(self.board.image, self.board.rect)
-
-        
         self.screen.blit(self.player.image, self.player.rect)
         
         self.zombies = [Zombie.Zombie(self)]
         for i in self.zombies:
             i.turn(*self.player.rect.center)
-        
         
         pygame.display.update()
         self.main_loop()
@@ -94,11 +93,11 @@ class Game:
         Determine what zombies are alive and then show them which indludes turning them towards
         the player, moving/killing them (step) and blitting.
         """
-        self.zombies = [i for i in self.zombies if not i.dead]
-        for i in self.zombies:
-            i.turn(*self.player.rect.center)
-            ########i.step(*self.player.rect.center)
-            self.screen.blit(i.image, i.rect)
+        self.zombies = [z for z in self.zombies if not z.dead]
+        for z in self.zombies:
+            z.turn(*self.player.rect.center)
+            z.step(*self.player.rect.center)
+            self.screen.blit(z.image, z.rect)
             
     
     def shoot_at_zombies(self, where):
@@ -111,12 +110,22 @@ class Game:
                 z.die()
         
     
+    def shoot(self, where, send_event=False):
+        """
+        A shot happened, handle everything for it.
+        """
+        self.player.shoot(*where)
+        if send_event:
+            self.net_object.send_event(net_code.ShotFired(where))
+        self.shoot_at_zombies(where)
     
     def main_loop(self):
         """
         The main loop of the game, where most of the fun happens.
         """
         counter = 0
+        last_mouse_x = last_mouse_y = 0
+        
         while 1:
             counter += 1
             self.clock.tick()
@@ -128,36 +137,33 @@ class Game:
                 
                 if self.role == settings.ROLE_SHOOTER and event.type == pygame.MOUSEBUTTONUP:
                     mouse_pos = pygame.mouse.get_pos()
-                    self.player.shoot(*mouse_pos)
+                    self.shoot(mouse_pos, send_event=True)
                     
-                    self.net_object.send_event(net_code.ShotFired(mouse_pos))
-                    self.shoot_at_zombies(mouse_pos)
                             
             with self.event_list_lock:
                 for event in self.event_list:
-                    
                     if event.msg_type == settings.NET_MSG_SHOT_FIRED:
-                        self.player.shoot(*event.where)
-                        self.shoot_at_zombies(event.where)
+                        self.shoot(event.where, send_event=False)
                     
                     elif event.msg_type == settings.NET_MSG_FLASHLIGHT:
                         self.board.unmask(*event.where)
 
-                
                 self.event_list = []
-                
                     
-                            
             mouse_x, mouse_y = pygame.mouse.get_pos()
             
-            if self.role == settings.ROLE_LIGHTER:
+            #If the mouse moved and you are the lighter, fire a network event:
+            if (self.role == settings.ROLE_LIGHTER) and (last_mouse_y != mouse_y or last_mouse_x != mouse_x):
                 self.board.unmask(mouse_x, mouse_y)
-                if not counter % 10:
+                #But not too often, so that not to overwhelm the network:
+                if not counter % 2:
                     self.net_object.send_event(net_code.FlashlightShine((mouse_x, mouse_y)))
             
+            #Start drawing:
             self.screen.fill((0,0,0))
             self.screen.blit(self.board.unmasked_image, self.board.rect)
             
+            #The shooter only sees zombies of the masked image (self.board.image) is unmasked:
             if self.role == settings.ROLE_SHOOTER:
                 self.render_zombies()
                 
@@ -169,22 +175,18 @@ class Game:
             self.player.turn(mouse_x, mouse_y)
             self.screen.blit(self.player.image, self.player.rect)
             
-            
-            
-            
             if self.dirty_rects and settings.ONLY_BLIT_DIRTY_RECTS:
                 pygame.display.update(self.dirty_rects)
             else:
                 pygame.display.update()
             
-            
             self.dirty_rects = []
-
+            last_mouse_y = mouse_y
+            last_mouse_x = mouse_x
+            
             #print self.clock.get_fps()
 
 
-        
-    
     def get_player_start_position(self):
         """
         The player initial position is probably the center. Mostly?
@@ -196,6 +198,19 @@ class Game:
         Get a place to spawn a zombie.
         """
         return (100, 100)
+    
+    
+    def set_caption(self):
+        caption = "Byte - a zombie game (%s - %s)"
+        role = "Shooter"
+        if self.role == settings.ROLE_LIGHTER:
+            role = "Lighter"
+            
+        net_role = "client"
+        if self.is_server:
+            net_role = "server"
+        
+        pygame.display.set_caption(caption % (role, net_role))
     
     
 

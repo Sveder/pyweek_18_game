@@ -11,7 +11,7 @@ import atexit
 import settings
 from utilities import log
 
-
+#Messages that are passed through the net and some utility classes to make it easier to instantiate them
 class Message:
     def __init__(self, msg_type=None, where=None):
         self.msg_type = msg_type
@@ -44,7 +44,9 @@ class NetBase:
         self.is_connected = False
         self.conn = None
         self.game = None
+        self.quit_loop = False
     
+
     def send_event(self, event):
         """
         Send the given event if the socket is connected.
@@ -58,40 +60,52 @@ class NetBase:
     
     def recv_event_loop(self):
         """
-        Wait for incoming events and add them to the event queue.
+        Wait for incoming events and add them to the event queue until the loop should be quit.
         """
         if not self.is_connected or not self.conn:
             raise Exception("Trying to enter game NET loop while not connected or no self.conn.")
         
-        while 1:
+        while not self.quit_loop:
             try:
-                ready = select.select([self.conn], [], [], 0.1) #Wait 0.1 seconds.
-                if ready[0]:
-                    data = self.conn.recv(1024)
-                    
-                    messages = data.split("}")
-                    for message in messages:
-                        if not message: continue
-                        
-                        if message[-1] != "}":
-                            message += "}"
-                        
-                        try:
-                            message = json.loads(message)
-                        except:
-                            continue
-                        msg_object = Message(*message)
-                        msg_object.__dict__ = message
-                        
-                        log("Received message from remote: %s" % msg_object)
-                        
-                        self._add_to_game_queue(msg_object)
-                
-                time.sleep(0)
+                self.recv_event()
             except Exception, e:
                 import traceback; traceback.print_exc()
                 import pdb;pdb.set_trace()
                 log("Exception in recv loop.", True)
+        
+    
+    def recv_event(self):
+        #Block for a short time while waiting for incoming event:
+        ready = select.select([self.conn], [], [], 0.1) 
+        if ready[0]:
+            data = self.conn.recv(4096)
+            
+            #Multiple messages arrive together, but with no actual separator
+            #so rely on the fact it is json and we won't send anything thats not a number and
+            #split by }, then readd it
+            messages = data.split("}")
+            for message in messages:
+                if not message: continue
+                
+                #Readd the split-ed } - hackity :)
+                if message[-1] != "}":
+                    message += "}"
+                
+                #Discard fragmented and unloadable messages:
+                try:
+                    message = json.loads(message)
+                except:
+                    continue
+                
+                #Recreate the Message object:
+                msg_object = Message()
+                msg_object.__dict__ = message
+                log("Received message from remote: %s" % msg_object)
+                
+                self._add_to_game_queue(msg_object)
+        
+        #Don't run on 100% cpu. Probably redundant as select does the same, but no time to research it:
+        time.sleep(0)
     
     
     def _add_to_game_queue(self, message):
@@ -104,7 +118,7 @@ class NetBase:
         with self.game.event_list_lock:
             self.game.event_list.append(message)
 
-        log("Added message to game queue: %s." % message)
+
 
 class Server(NetBase):
     def start(self, game):
@@ -122,13 +136,13 @@ class Server(NetBase):
         #Send header and wait for response:
         conn.send(settings.NET_MAGIC_HEADER_SERVER)
         data = conn.recv(len(settings.NET_MAGIC_HEADER_CLIENT))
+        
         if data != settings.NET_MAGIC_HEADER_CLIENT:
             log("Server recieved wrong header: %s" % data)
             raise Excpetion()
         
         role = conn.recv(1)
         role = int(role)
-        
         if role not in [settings.ROLE_LIGHTER, settings.ROLE_SHOOTER]:
             log("Server recieved bad role: %s" % role)
             raise Excpetion()
@@ -140,20 +154,17 @@ class Server(NetBase):
         self.recv_event_loop()
     
     
-            
-        
 class Client(NetBase):
     def connect(self, game):
         self.game = game
         log("Connecting to: %s:%s" % (self.game.host, self.game.port))
         
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        #s.setblocking(0)
         s.connect((self.game.host, self.game.port))
         self.is_connected = True
+        
         header = s.recv(len(settings.NET_MAGIC_HEADER_SERVER))
         if header != settings.NET_MAGIC_HEADER_SERVER:
-            print "omg fail~!!!@!#" * 400
             log("Client recieved wrong header: %s" % header)
             raise Excpetion()
         
