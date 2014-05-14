@@ -86,6 +86,10 @@ class Game:
         
         pygame.display.update()
         self.main_loop()
+        self.net_object.send_event(net_code.QuitGame())
+        log("Player exited!")
+        
+        self.net_object.quit_loop = True
         
     
     def render_zombies(self):
@@ -132,7 +136,6 @@ class Game:
             
             for event in pygame.event.get():
                 if (event.type == pygame.QUIT) or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                    log("Player exited!")
                     return
                 
                 if self.role == settings.ROLE_SHOOTER and event.type == pygame.MOUSEBUTTONUP:
@@ -147,6 +150,9 @@ class Game:
                     
                     elif event.msg_type == settings.NET_MSG_FLASHLIGHT:
                         self.board.unmask(*event.where)
+                    
+                    elif event.msg_type == settings.NET_MSG_QUIT:
+                        return
 
                 self.event_list = []
                     

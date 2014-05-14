@@ -32,6 +32,10 @@ class ShotFired(Message):
 class NewZombie(Message):
     def __init__(self, where):
         Message.__init__(self, settings.NET_MSG_ZOMBIE_CREATED, where)
+        
+class QuitGame(Message):
+    def __init__(self):
+        Message.__init__(self, settings.NET_MSG_QUIT, (0, 0))
     
 
 
