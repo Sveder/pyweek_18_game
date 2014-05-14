@@ -2,7 +2,6 @@ import data
 import threading
 
 import pygame
-import Mastermind
 
 import Board
 import Player
@@ -91,18 +90,35 @@ class Game:
         
     
     def render_zombies(self):
+        """
+        Determine what zombies are alive and then show them which indludes turning them towards
+        the player, moving/killing them (step) and blitting.
+        """
         self.zombies = [i for i in self.zombies if not i.dead]
         for i in self.zombies:
             i.turn(*self.player.rect.center)
             ########i.step(*self.player.rect.center)
             self.screen.blit(i.image, i.rect)
+            
+    
+    def shoot_at_zombies(self, where):
+        """
+        Fire a shot at the zombies and determine whether it actually hurt one of them.
+        """
+        log("Shots fired at zombies: %s" % str(where))
+        for z in self.zombies:
+            if z.rect.collidepoint(*where):
+                z.die()
+        
     
     
     def main_loop(self):
         """
         The main loop of the game, where most of the fun happens.
         """
+        counter = 0
         while 1:
+            counter += 1
             self.clock.tick()
             
             for event in pygame.event.get():
@@ -115,19 +131,18 @@ class Game:
                     self.player.shoot(*mouse_pos)
                     
                     self.net_object.send_event(net_code.ShotFired(mouse_pos))
-                    
-                    for i in self.zombies:
-                        if i.rect.collidepoint(mouse_pos):
-                            i.die()
+                    self.shoot_at_zombies(mouse_pos)
                             
             with self.event_list_lock:
                 for event in self.event_list:
-                    print "------>", event
+                    
                     if event.msg_type == settings.NET_MSG_SHOT_FIRED:
                         self.player.shoot(*event.where)
-                        for i in self.zombies:
-                            if i.rect.collidepoint(*event.where):
-                                i.die()
+                        self.shoot_at_zombies(event.where)
+                    
+                    elif event.msg_type == settings.NET_MSG_FLASHLIGHT:
+                        self.board.unmask(*event.where)
+
                 
                 self.event_list = []
                 
@@ -137,6 +152,8 @@ class Game:
             
             if self.role == settings.ROLE_LIGHTER:
                 self.board.unmask(mouse_x, mouse_y)
+                if not counter % 10:
+                    self.net_object.send_event(net_code.FlashlightShine((mouse_x, mouse_y)))
             
             self.screen.fill((0,0,0))
             self.screen.blit(self.board.unmasked_image, self.board.rect)

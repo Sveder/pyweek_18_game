@@ -64,18 +64,34 @@ class NetBase:
             raise Exception("Trying to enter game NET loop while not connected or no self.conn.")
         
         while 1:
-            ready = select.select([self.conn], [], [], 0.1) #Wait 0.1 seconds.
-            if ready[0]:
-                data = self.conn.recv(1024)
-                message = json.loads(data)
-                msg_object = Message(*message)
-                msg_object.__dict__ = message
+            try:
+                ready = select.select([self.conn], [], [], 0.1) #Wait 0.1 seconds.
+                if ready[0]:
+                    data = self.conn.recv(1024)
+                    
+                    messages = data.split("}")
+                    for message in messages:
+                        if not message: continue
+                        
+                        if message[-1] != "}":
+                            message += "}"
+                        
+                        try:
+                            message = json.loads(message)
+                        except:
+                            continue
+                        msg_object = Message(*message)
+                        msg_object.__dict__ = message
+                        
+                        log("Received message from remote: %s" % msg_object)
+                        
+                        self._add_to_game_queue(msg_object)
                 
-                log("Received message from remote: %s" % msg_object)
-                
-                self._add_to_game_queue(msg_object)
-            
-            time.sleep(0)
+                time.sleep(0)
+            except Exception, e:
+                import traceback; traceback.print_exc()
+                import pdb;pdb.set_trace()
+                log("Exception in recv loop.", True)
     
     
     def _add_to_game_queue(self, message):
