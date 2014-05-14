@@ -18,16 +18,18 @@ class Player(Actor.Actor):
         """
         utilities.log("Initiated player: %s" % role)
         Actor.Actor.__init__(self, game, settings.PLAYER_IMAGE_PATH_FORMAT, game.get_player_start_position)
-            
+        
+        pygame.mixer.music.load(data.filepath(settings.PLAYER_SHOT_SOUND))
+        pygame.mixer.music.play()
+        
         self.role = role
         
     def shoot(self, at_x, at_y):
         utilities.log("Player (%s) is shooting at: %s, %s" % (self.role, at_x, at_y))
+        pygame.mixer.music.play()
 
         
         
-
-
 class Shooter(Player):
     """
     This is the shooter role - the guy who will shoot zombies but can't actively see them.
@@ -35,13 +37,7 @@ class Shooter(Player):
     def __init__(self, game):
         Player.__init__(self, game, settings.ROLE_SHOOTER)
     
-        pygame.mixer.music.load(data.filepath(settings.PLAYER_SHOT_SOUND))
         
-    
-    def shoot(self, at_x, at_y):
-        Player.shoot(self, at_x, at_y)
-        pygame.mixer.music.play()
-    
     
 class Lighter(Player):
     """
@@ -49,6 +45,7 @@ class Lighter(Player):
     """
     def __init__(self, game):
         Player.__init__(self, game, settings.ROLE_LIGHTER)
+    
     
     
     

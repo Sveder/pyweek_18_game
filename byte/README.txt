@@ -20,6 +20,20 @@ Othewise open a terminal / console and "cd" to the game directory and run:
 How to Play the Game
 --------------------
 
+To run the game:
+
+run_game.exe <network_role> <game_role> <host> <port>
+
+where network role is: y - server
+                       n - client
+                       
+and game roles are: shooter, lighter
+
+Example:
+run_game.exe n shooter 84.108.247.140 8080
+
+run_game.exe y lighter 84.108.247.140 8080
+
 
 
 Move the cursor around the screen with the mouse.

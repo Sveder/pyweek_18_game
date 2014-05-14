@@ -131,6 +131,7 @@ class Game:
         """
         counter = 0
         last_mouse_x = last_mouse_y = 0
+        last_unmask_x = last_unmask_y = 0
         
         while 1:
             counter += 1
@@ -142,7 +143,7 @@ class Game:
                         self.shoot(event.where, send_event=False)
                     
                     elif event.msg_type == settings.NET_MSG_FLASHLIGHT:
-                        self.board.unmask(*event.where)
+                        last_unmask_x, last_unmask_y = event.where
                     
                     elif event.msg_type == settings.NET_MSG_QUIT:
                         return
@@ -171,6 +172,9 @@ class Game:
                 #But not too often, so that not to overwhelm the network:
                 if not counter % 2:
                     self.net_object.send_event(net_code.FlashlightShine((mouse_x, mouse_y)))
+            
+            elif self.role == settings.ROLE_SHOOTER:
+                self.board.unmask(last_unmask_x, last_unmask_y)
             
             #Start drawing:
             self.screen.fill((0,0,0))
