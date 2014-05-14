@@ -1,3 +1,4 @@
+import sys
 import data
 import threading
 
@@ -33,6 +34,7 @@ class Game:
         self.host = host
         self.port = port
         self.is_server = is_server
+        self.peer_connected = False
         
         #This will definitely move soon:
         if is_server:
@@ -134,15 +136,6 @@ class Game:
             counter += 1
             self.clock.tick()
             
-            for event in pygame.event.get():
-                if (event.type == pygame.QUIT) or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
-                    return
-                
-                if self.role == settings.ROLE_SHOOTER and event.type == pygame.MOUSEBUTTONUP:
-                    mouse_pos = pygame.mouse.get_pos()
-                    self.shoot(mouse_pos, send_event=True)
-                    
-                            
             with self.event_list_lock:
                 for event in self.event_list:
                     if event.msg_type == settings.NET_MSG_SHOT_FIRED:
@@ -155,6 +148,20 @@ class Game:
                         return
 
                 self.event_list = []
+                
+            if not self.net_object.is_connected:
+                continue
+            
+            for event in pygame.event.get():
+                if (event.type == pygame.QUIT) or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                    return
+                
+                if self.role == settings.ROLE_SHOOTER and event.type == pygame.MOUSEBUTTONUP:
+                    mouse_pos = pygame.mouse.get_pos()
+                    self.shoot(mouse_pos, send_event=True)
+                    
+                            
+            
                     
             mouse_x, mouse_y = pygame.mouse.get_pos()
             
@@ -231,3 +238,23 @@ def client_start():
     game = Game("localhost", 12345, False, role = settings.ROLE_SHOOTER)
     game.start()
     utilities.log("Game ended!")
+    
+def start():
+    log("Game started with the following args: %s" % str(sys.argv[1:]))
+    is_server, role_s, host, port = sys.argv[1:]
+    
+    role = settings.ROLE_LIGHTER
+    if role_s == "shooter":
+        role = settings.ROLE_SHOOTER
+    
+    port = int(port)
+    
+    if is_server == "y":
+        utilities.log("Game started as SERVER!")
+        game = Game(host, port, True, role)
+    else:
+        utilities.log("Game started as CLIENT!")
+        game = Game(host, port, False, role)
+        
+    game.start()
+    

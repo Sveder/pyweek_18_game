@@ -24,6 +24,8 @@ class Zombie(Actor.Actor):
         self.dying = False
         self.how_dead = 0
         self.name = name
+        self.slower = 0
+        
         
     
     def die(self):
@@ -44,7 +46,11 @@ class Zombie(Actor.Actor):
                 self.dead = True
             
             return
-                
+        
+        self.slower += 1
+        if self.slower % 7:
+            return
+        
         new_x = self.rect.center[0]
         if toward_x > self.rect.center[0]:
             new_x = (self.rect.center[0] + settings.SIMPLE_ZOMBIE_STEP)
