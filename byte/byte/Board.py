@@ -1,6 +1,5 @@
 import data
 import math
-import numpy
 
 import pygame
 

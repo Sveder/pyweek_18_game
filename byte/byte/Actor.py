@@ -1,7 +1,6 @@
 import PIL
 import data
 import math
-import numpy
 
 import pygame
 
