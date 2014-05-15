@@ -1,9 +1,9 @@
 import os
-import json
 import math
 import time
 import select
 import socket
+import struct
 
 import pygame
 
@@ -13,7 +13,7 @@ from utilities import log
 
 #Messages that are passed through the net and some utility classes to make it easier to instantiate them
 class Message:
-    def __init__(self, msg_type=None, where=None):
+    def __init__(self, msg_type=None, where=(0, 0)):
         self.msg_type = msg_type
         self.where = where
     
@@ -35,7 +35,7 @@ class NewZombie(Message):
         
 class QuitGame(Message):
     def __init__(self):
-        Message.__init__(self, settings.NET_MSG_QUIT, (0, 0))
+        Message.__init__(self, settings.NET_MSG_QUIT)
     
 
 
@@ -58,7 +58,7 @@ class NetBase:
         if not self.is_connected or not self.conn:
             return
         
-        data = json.dumps(event.__dict__) #Can't dump arbitrary python objects... :(
+        data = struct.pack("iii", event.msg_type, event.where[0], event.where[1])
         self.conn.send(data)
     
     
@@ -83,27 +83,19 @@ class NetBase:
         ready = select.select([self.conn], [], [], 0.1) 
         if ready[0]:
             data = self.conn.recv(4096)
-            
-            #Multiple messages arrive together, but with no actual separator
-            #so rely on the fact it is json and we won't send anything thats not a number and
-            #split by }, then readd it
-            messages = data.split("}")
-            for message in messages:
+    
+            for message_start in xrange(0, len(data), struct.calcsize("iii")):
+                message = data[message_start:12]
                 if not message: continue
-                
-                #Readd the split-ed } - hackity :)
-                if message[-1] != "}":
-                    message += "}"
                 
                 #Discard fragmented and unloadable messages:
                 try:
-                    message = json.loads(message)
+                    message = struct.unpack("iii", message)
                 except:
                     continue
                 
                 #Recreate the Message object:
-                msg_object = Message()
-                msg_object.__dict__ = message
+                msg_object = Message(message[0], (message[1], message[2]))
                 log("Received message from remote: %s" % msg_object)
                 
                 self._add_to_game_queue(msg_object)
