@@ -6,6 +6,7 @@ import threading
 import pygame
 
 import Board
+import Bullet
 import Player
 import Zombie
 import net_code
@@ -86,6 +87,9 @@ class Game:
         
         self.zombies = []
         
+        self.bullets = Bullet.Bullet(self)
+        
+        
         pygame.display.update()
         self.main_loop()
         self.net_object.send_event(net_code.QuitGame())
@@ -160,10 +164,6 @@ class Game:
         last_mouse_x = last_mouse_y = 0
         last_unmask_x = last_unmask_y = 0
         
-        #Spawn a zombie for good measure:
-        if self.role == settings.ROLE_LIGHTER:
-            self.spawn_zombie(send_event=True)
-        
         while 1:
             counter += 1
             self.clock.tick()
@@ -186,6 +186,11 @@ class Game:
                 
             if not self.net_object.is_connected:
                 continue
+            
+            if self.zombies == []:
+                #Spawn a zombie for good measure:
+                if self.role == settings.ROLE_LIGHTER:
+                    self.spawn_zombie(send_event=True)
             
             for event in pygame.event.get():
                 if (event.type == pygame.QUIT) or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
@@ -229,6 +234,8 @@ class Game:
             self.player.turn(mouse_x, mouse_y)
             self.screen.blit(self.player.image, self.player.rect)
             
+            self.screen.blit(self.bullets.render_bullets(self.player.bullet_count), settings.BULLET_COUNTER_LOCATION)
+            
             if self.dirty_rects and settings.ONLY_BLIT_DIRTY_RECTS:
                 pygame.display.update(self.dirty_rects)
             else:
@@ -238,7 +245,7 @@ class Game:
             last_mouse_y = mouse_y
             last_mouse_x = mouse_x
             
-            print self.clock.get_fps()
+            #print self.clock.get_fps()
 
 
     def get_player_start_position(self):

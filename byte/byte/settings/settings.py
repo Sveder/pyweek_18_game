@@ -34,7 +34,8 @@ ROLE_NONE = 0
 ROLE_SHOOTER = 1
 ROLE_LIGHTER = 2
 
-
+BULLET_INITIAL_COUNT = 8
+BULLET_COUNTER_LOCATION = (10, 10)
 
 
 #-------------------------------------------------------------------------------
@@ -42,6 +43,8 @@ ROLE_LIGHTER = 2
 #-------------------------------------------------------------------------------
 IMAGE_FOLDER = "images"
 SOUND_FOLDER = "sounds"
+
+BULLET_IMAGE_PATH = os.path.join(IMAGE_FOLDER, "bullet.png")
 
 PLAYER_IMAGE_PATH_FORMAT = os.path.join(IMAGE_FOLDER, "player", "player_%s.png")
 PLAYER_SHOT_SOUND = os.path.join(SOUND_FOLDER, "shot.mp3")
