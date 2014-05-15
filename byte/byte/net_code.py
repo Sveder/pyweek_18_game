@@ -58,7 +58,7 @@ class NetBase:
         if not self.is_connected or not self.conn:
             return
         
-        data = struct.pack("iii", event.msg_type, event.where[0], event.where[1])
+        data = struct.pack("<iii", event.msg_type, event.where[0], event.where[1])
         self.conn.send(data)
     
     
@@ -84,13 +84,13 @@ class NetBase:
         if ready[0]:
             data = self.conn.recv(4096)
     
-            for message_start in xrange(0, len(data), struct.calcsize("iii")):
+            for message_start in xrange(0, len(data), struct.calcsize("<iii")):
                 message = data[message_start:12]
                 if not message: continue
                 
                 #Discard fragmented and unloadable messages:
                 try:
-                    message = struct.unpack("iii", message)
+                    message = struct.unpack("<iii", message)
                 except:
                     continue
                 

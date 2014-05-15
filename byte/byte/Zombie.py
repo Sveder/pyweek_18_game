@@ -25,8 +25,6 @@ class Zombie(Actor.Actor):
         self.name = name
         self.slower = 0
         
-        
-    
     def die(self):
         """
         Oh no I'm dead.

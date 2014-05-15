@@ -27,9 +27,14 @@ else:
 
 SIMPLE_ZOMBIE_STEP = 1
 
+ZOMBIE_SPAWN_AREA_WIDTH_PERCENT = 0.3
+ZOMBIE_SPAWN_AREA_HEIGHT_PERCENT = 0.2
+
 ROLE_NONE = 0
 ROLE_SHOOTER = 1
 ROLE_LIGHTER = 2
+
+
 
 
 #-------------------------------------------------------------------------------

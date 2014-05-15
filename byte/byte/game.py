@@ -1,5 +1,6 @@
 import sys
 import data
+import random
 import threading
 
 import pygame
@@ -14,6 +15,7 @@ from utilities import log
 
 ip = "localhost"
 port = 6317
+
 
 
 class Game:
@@ -82,9 +84,7 @@ class Game:
         self.screen.blit(self.board.image, self.board.rect)
         self.screen.blit(self.player.image, self.player.rect)
         
-        self.zombies = [Zombie.Zombie(self)]
-        for i in self.zombies:
-            i.turn(*self.player.rect.center)
+        self.zombies = []
         
         pygame.display.update()
         self.main_loop()
@@ -92,6 +92,32 @@ class Game:
         log("Player exited!")
         
         self.net_object.quit_loop = True
+        
+    def spawn_zombie(self, loc=None, send_event=False):
+        """
+        Spawn a zombie in a random location far from player. If location is given and is a two
+        int tuple, the zombie will spawn there.
+        """
+        zombie = Zombie.Zombie(self)
+        if loc:
+            zombie.rect.center = loc
+        zombie.turn(*self.player.rect.center)
+        self.zombies.append(zombie)
+        if send_event:
+            self.net_object.send_event(net_code.NewZombie(zombie.rect.center))
+        
+    
+    def get_zombie_spawn(self):
+        """
+        Get a place to spawn a zombie.
+        """
+        width_lower_range = range(0, int(settings.ZOMBIE_SPAWN_AREA_WIDTH_PERCENT * self.board.rect.width))
+        width_higher_range = range(self.board.rect.width - int(settings.ZOMBIE_SPAWN_AREA_WIDTH_PERCENT * self.board.rect.width), self.board.rect.width)
+    
+        height_lower_range = range(0, int(settings.ZOMBIE_SPAWN_AREA_HEIGHT_PERCENT * self.board.rect.height))
+        height_higher_range = range(self.board.rect.height - int(settings.ZOMBIE_SPAWN_AREA_HEIGHT_PERCENT * self.board.rect.height), self.board.rect.height)
+
+        return random.choice(width_higher_range + width_lower_range), random.choice(height_lower_range + height_higher_range)
         
     
     def render_zombies(self):
@@ -124,6 +150,7 @@ class Game:
         if send_event:
             self.net_object.send_event(net_code.ShotFired(where))
         self.shoot_at_zombies(where)
+        
     
     def main_loop(self):
         """
@@ -132,6 +159,10 @@ class Game:
         counter = 0
         last_mouse_x = last_mouse_y = 0
         last_unmask_x = last_unmask_y = 0
+        
+        #Spawn a zombie for good measure:
+        if self.role == settings.ROLE_LIGHTER:
+            self.spawn_zombie(send_event=True)
         
         while 1:
             counter += 1
@@ -147,6 +178,9 @@ class Game:
                     
                     elif event.msg_type == settings.NET_MSG_QUIT:
                         return
+                    
+                    elif event.msg_type == settings.NET_MSG_ZOMBIE_CREATED:
+                        self.spawn_zombie(event.where, send_event=False)
 
                 self.event_list = []
                 
@@ -160,6 +194,9 @@ class Game:
                 if self.role == settings.ROLE_SHOOTER and event.type == pygame.MOUSEBUTTONUP:
                     mouse_pos = pygame.mouse.get_pos()
                     self.shoot(mouse_pos, send_event=True)
+                
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_z:
+                    self.spawn_zombie(send_event=True)
                     
                             
             
@@ -201,7 +238,7 @@ class Game:
             last_mouse_y = mouse_y
             last_mouse_x = mouse_x
             
-            #print self.clock.get_fps()
+            print self.clock.get_fps()
 
 
     def get_player_start_position(self):
@@ -209,12 +246,6 @@ class Game:
         The player initial position is probably the center. Mostly?
         """
         return self.screen.get_rect().center
-
-    def get_zombie_spawn(self):
-        """
-        Get a place to spawn a zombie.
-        """
-        return (100, 100)
     
     
     def set_caption(self):
