@@ -77,7 +77,6 @@ class Game:
         
         if self.role == settings.ROLE_SHOOTER:
             cursor = pygame.cursors.compile(settings.SIGHT_CURSOR)
-            print cursor
             pygame.mouse.set_cursor((24, 24), (12, 12), *cursor)
         else:
             pygame.mouse.set_visible(False)
@@ -212,6 +211,9 @@ class Game:
                 
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_z:
                     self.spawn_zombie(send_event=True)
+                
+                if event.type == pygame.USEREVENT:
+                    self.board.start_music()
                     
                             
             
@@ -255,7 +257,7 @@ class Game:
             last_mouse_y = mouse_y
             last_mouse_x = mouse_x
             
-            print self.clock.get_fps()
+            #print self.clock.get_fps()
 
 
     def get_player_start_position(self):

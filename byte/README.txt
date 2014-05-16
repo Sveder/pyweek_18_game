@@ -14,14 +14,6 @@ On Windows or Mac OS X, locate the "run_game.pyw" file and double-click it.
 
 Othewise open a terminal / console and "cd" to the game directory and run:
 
-  python run_game.py
-
-
-How to Play the Game
---------------------
-
-To run the game:
-
 run_game.exe <network_role> <game_role> <host> <port>
 
 where network role is: y - server
@@ -35,10 +27,20 @@ run_game.exe n shooter 84.108.247.140 8080
 run_game.exe y lighter 84.108.247.140 8080
 
 
+How to Play the Game
+--------------------
 
-Move the cursor around the screen with the mouse.
+One player is in control of the flashlight and is the one who can see the zombies coming. He should
+use the power of the amazing flashlight to help the other player spot the zombies and kill them, as the
+second player controls the shotgun. Work together and defeat the fearsome zombies with your limited ammo
+but unlimited with!
 
-Press the left mouse button to fire the ducks.
+
+Credits 
+-----------------
+Music: Chris Zabriskie - "Cylinder Two" and "Cylinder Eight" from:
+http://freemusicarchive.org/music/Chris_Zabriskie/
+
 
 
 Development notes 

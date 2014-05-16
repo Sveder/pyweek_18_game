@@ -84,6 +84,12 @@ ZOMBIE_FOLDER = os.path.join(IMAGE_FOLDER, "zombies")
 SIMPLE_ZOMBIE_FOLDER = os.path.join(ZOMBIE_FOLDER, "simple")
 SIMPLE_ZOMBIE_PATH_FORMAT = os.path.join(SIMPLE_ZOMBIE_FOLDER, "simple_%s.png")
 
+MUSIC_FOLDER = os.path.join(SOUND_FOLDER, "music")
+MUSIC_TRACKS = [
+    os.path.join(MUSIC_FOLDER, "music_1.ogg"),
+    os.path.join(MUSIC_FOLDER, "music_2.ogg"),
+]
+
 
 #-------------------------------------------------------------------------------
 #Net parameters:

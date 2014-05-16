@@ -12,7 +12,7 @@ HALF_RECT_TEMP = BRIGHTEN_RECT_TEMP / 2
 class Board(pygame.sprite.Sprite):
     """
     This is the base class of the board who holds the "level" data - background, number of
-    zombies, masking of background etc.
+    zombies, masking of background, music etc.
     """
     def __init__(self, game):
         """
@@ -29,7 +29,15 @@ class Board(pygame.sprite.Sprite):
         self.image.set_colorkey((255, 255,0))
         
         self.last_brighten = (0, 0)
-    
+        
+        #Load music:
+        self.tracks = []
+        self.cur_track = 0
+        for track in settings.MUSIC_TRACKS:
+            sound = pygame.mixer.Sound(data.filepath(track))
+            self.tracks.append(sound)
+            
+        self.start_music()
     
     def unmask(self, near_x, near_y):
         """
@@ -52,6 +60,17 @@ class Board(pygame.sprite.Sprite):
         
         
         self.game.dirty_rects.append(rect)
+        
+        
+    def start_music(self):
+        channel = self.tracks[self.cur_track].play()
+        channel.set_endevent(pygame.USEREVENT)
+        self.cur_track += 1
+        self.cur_track %= len(self.tracks)
+        
+        
+        
+        
         
         
         
