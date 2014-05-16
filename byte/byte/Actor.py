@@ -12,7 +12,7 @@ class Actor(pygame.sprite.Sprite):
     """
     Actor in our game. A helper class to load the degree sprites and some turning logic.
     """
-    def __init__(self, game, file_path_format, start_position_func=None):
+    def __init__(self, game, file_path_format, start_position_func=None, sprite_count=360, color_key=(255, 255, 255)):
         """
         Load all the degree logic.
         """
@@ -22,10 +22,11 @@ class Actor(pygame.sprite.Sprite):
         self.game = game
         
         #load all the angle images:
+        self.sprite_count = sprite_count
         self.angle_pictures = []
-        for i in xrange(365):
+        for i in xrange(self.sprite_count):
             image, _ = utilities.load_image(data.filepath(file_path_format % i))
-            image.set_colorkey((255, 255, 255))
+            image.set_colorkey(color_key)
             self.angle_pictures.append(image)
         
         self._cur_angle = 0
@@ -35,7 +36,6 @@ class Actor(pygame.sprite.Sprite):
         if start_position_func:
             self.rect.center = start_position_func()
 
-    
     
     def turn(self, towards_x, towards_y):
         """
@@ -49,12 +49,71 @@ class Actor(pygame.sprite.Sprite):
         self.game.dirty_rects.append(old_rect)
         
         #Find the new angle and replace the image:
-        self._cur_angle = int(round(-angle_to_pointer)) + 90
-        self._cur_angle %= 360
+        self._cur_angle = int(round(-angle_to_pointer)) / self.sprite_count + 90
+        self._cur_angle %= self.sprite_count
         self.image = self.angle_pictures[self._cur_angle]
         
         self.rect = self.image.get_rect()
         self.rect.center = old_rect.center
+        
+
+class PlayerActor(pygame.sprite.Sprite):
+    """
+    Actor in our game. A helper class to load the degree sprites and some turning logic.
+    """
+    def __init__(self, game, file_path_format, start_position_func=None, sprite_count=360, color_key=(255, 255, 255)):
+        """
+        Load all the degree logic.
+        """
+        pygame.sprite.Sprite.__init__(self)
+        log("Creating an actor with file format: %s" % file_path_format)
+        
+        self.game = game
+        self.color_key = color_key
+        
+        #load all the angle images:
+        self.sprite_count = sprite_count
+        self.angle_pictures = []
+        for i in xrange(self.sprite_count):
+            sprite_sheet = utilities.spritesheet(data.filepath(file_path_format % i))
+            self.angle_pictures.append(sprite_sheet)
+        
+        self._cur_angle = 0
+        self.shot_frame = 0
+        
+        positions = settings.SPRITE_PLAYER_POSITIONS[self._cur_angle][self.shot_frame]
+        rect = pygame.Rect(positions[0], 0, positions[1], 51)
+        self.image = self.angle_pictures[self._cur_angle].image_at(rect, colorkey=self.color_key)
+        
+        self.rect = self.image.get_rect()
+        
+        if start_position_func:
+            self.rect.center = start_position_func()
+
+    
+    def turn(self, towards_x, towards_y):
+        """
+        Turn the player towards the point whose coordinates are given.
+        """
+        angle_to_pointer = math.degrees(math.atan2(towards_y - self.rect.center[1], towards_x - self.rect.center[0]))
+
+
+        #Append the rect to move/delete:
+        old_rect = self.rect
+        self.game.dirty_rects.append(old_rect)
+        
+        #Find the new angle and replace the image:
+        self._cur_angle = int(round(-angle_to_pointer)) / self.sprite_count + 90
+        self._cur_angle %= self.sprite_count
+        
+        positions = settings.SPRITE_PLAYER_POSITIONS[self._cur_angle][self.shot_frame]
+        rect = pygame.Rect(positions[0], 0, positions[1], 51)
+        
+        self.image = self.angle_pictures[self._cur_angle].image_at(rect, colorkey=self.color_key)
+        
+        self.rect = self.image.get_rect()
+        self.rect.center = old_rect.center
+
     
 
 class SpriteActor(pygame.sprite.Sprite):

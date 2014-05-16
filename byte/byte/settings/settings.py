@@ -2,6 +2,8 @@ import os
 
 import pygame
 
+from player_positions import *
+
 #-------------------------------------------------------------------------------
 #Debug parameters:
 #-------------------------------------------------------------------------------
@@ -79,7 +81,7 @@ SOUND_FOLDER = "sounds"
 
 BULLET_IMAGE_PATH = os.path.join(IMAGE_FOLDER, "bullet.png")
 
-PLAYER_IMAGE_PATH_FORMAT = os.path.join(IMAGE_FOLDER, "player", "player_%s.png")
+PLAYER_IMAGE_PATH_FORMAT = os.path.join(IMAGE_FOLDER, "player", "player_small_%s.png")
 PLAYER_SHOT_SOUND = os.path.join(SOUND_FOLDER, "shot.ogg")
 PLAYER_EMPTY_SHOT_SOUND = os.path.join(SOUND_FOLDER, "empty_shot.ogg")
 

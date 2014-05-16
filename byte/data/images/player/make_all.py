@@ -1,7 +1,7 @@
 from PIL import Image
 
-pic = Image.open("player.png")
+for i in xrange(15):
+    pic = Image.open("player_%s.png" % i)
+    new_pic = pic.resize((200, 51))
+    new_pic.save("player_small_%s.png" % i)
 
-for i in xrange(365):
-    new_pic = pic.rotate(i)
-    new_pic.save("player_%s.png" % i)

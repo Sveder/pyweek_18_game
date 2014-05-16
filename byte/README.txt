@@ -51,6 +51,9 @@ http://freesound.org/people/missozzy/sounds/169845/
 death.ogg - "Monster Sounds » Slow Zombie Death" by scorpion67890 from:
 http://freesound.org/people/scorpion67890/sounds/169058/
 
+shot.ogg - "Gun Fire Sound" by GoodSoundForYou from:
+http://soundbible.com/1998-Gun-Fire.html
+
 empty_shot.ogg - "Empty Gun Shot" by KlawyKogut from:
 http://freesound.org/people/KlawyKogut/sounds/154934/#
 
@@ -58,7 +61,9 @@ zombie sprites - "Zombie RPG sprites" by Curt from:
 http://opengameart.org/content/zombie-rpg-sprites
 "Curt - cjc83486 http://opengameart.org/content/zombie-rpg-sprites"
 
-
+AMAZING player sprites - "tmim Heroine - Bleed's Game Art" by bleed from:
+http://opengameart.org/content/tmim-heroine-bleeds-game-art
+Visit his portfolio: http://remusprites.carbonmade.com/
 
 
 

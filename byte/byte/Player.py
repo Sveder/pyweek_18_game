@@ -8,7 +8,7 @@ import Actor
 import settings
 import utilities
 
-class Player(Actor.Actor):
+class Player(Actor.PlayerActor):
     """
     This is the base class of the poor player controlled human who is surely going to be Bytten by zombies.
     """
@@ -17,7 +17,7 @@ class Player(Actor.Actor):
         Initializes the player parameters.
         """
         utilities.log("Initiated player: %s" % role)
-        Actor.Actor.__init__(self, game, settings.PLAYER_IMAGE_PATH_FORMAT, game.get_player_start_position)
+        Actor.PlayerActor.__init__(self, game, settings.PLAYER_IMAGE_PATH_FORMAT, game.get_player_start_position, 15, (0,0,0))
                 
         self.role = role
         self.bullet_count = settings.BULLET_INITIAL_COUNT
