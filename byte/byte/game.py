@@ -76,7 +76,11 @@ class Game:
         self.set_caption()
         
         if self.role == settings.ROLE_SHOOTER:
-            pygame.mouse.set_cursor(*pygame.cursors.broken_x)
+            cursor = pygame.cursors.compile(settings.SIGHT_CURSOR)
+            print cursor
+            pygame.mouse.set_cursor((24, 24), (12, 12), *cursor)
+        else:
+            pygame.mouse.set_visible(False)
         
         self.create_player()
         
@@ -92,6 +96,7 @@ class Game:
         
         pygame.display.update()
         self.main_loop()
+        
         self.net_object.send_event(net_code.QuitGame())
         log("Player exited!")
         
@@ -169,6 +174,11 @@ class Game:
             self.clock.tick()
             
             with self.event_list_lock:
+                if self.net_object.error:
+                    log("Error in net code: %s" % self.net_object.error)
+                    
+                    return
+                
                 for event in self.event_list:
                     if event.msg_type == settings.NET_MSG_SHOT_FIRED:
                         self.shoot(event.where, send_event=False)
@@ -245,7 +255,7 @@ class Game:
             last_mouse_y = mouse_y
             last_mouse_x = mouse_x
             
-            #print self.clock.get_fps()
+            print self.clock.get_fps()
 
 
     def get_player_start_position(self):

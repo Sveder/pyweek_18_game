@@ -64,7 +64,6 @@ class Zombie(Actor.Actor):
         else:
             new_y = self.precise_center[1] - step
         
-        print (new_x, new_y)
         self.precise_center = (new_x, new_y)
         self.rect.center = (round(new_x), round(new_y))
 

@@ -37,6 +37,33 @@ ROLE_LIGHTER = 2
 BULLET_INITIAL_COUNT = 8
 BULLET_COUNTER_LOCATION = (10, 10)
 
+SIGHT_CURSOR = (
+"          XXXX          ",
+"         X XX X         ",
+"        X  XX  X        ",
+"       X   XX   X       ",
+"      X    XX    X      ",
+"     X     XX     X     ",
+"    X      XX      X    ",
+"   X       XX       X   ",
+"  X        XX        X  ",
+" X         XX         X ",
+"XXXX XX XXXXXXXX XX XXXX",
+"XXXX XX XXXXXXXX XX XXXX",
+" X         XX         X ",
+"  X        XX        X  ",
+"   X       XX       X   ",
+"    X      XX      X    ",
+"     X     XX     X     ",
+"      X    XX    X      ",
+"       X   XX   X       ",
+"        X  XX  X        ",
+"         X XX X         ",
+"          XXXX          ",
+"           XX           ",
+"                        ",)
+
+
 
 #-------------------------------------------------------------------------------
 #File/Path parameters:
@@ -62,8 +89,8 @@ SIMPLE_ZOMBIE_PATH_FORMAT = os.path.join(SIMPLE_ZOMBIE_FOLDER, "simple_%s.png")
 #Net parameters:
 #-------------------------------------------------------------------------------
 
-NET_MAGIC_HEADER_SERVER = "server_header0.0>>>"
-NET_MAGIC_HEADER_CLIENT = "client_header0.0>>>"
+NET_MAGIC_HEADER_SERVER = "server_header0.1>>>"
+NET_MAGIC_HEADER_CLIENT = "client_header0.1>>>"
 
 NET_MSG_ZOMBIE_CREATED = 1
 NET_MSG_FLASHLIGHT = 2

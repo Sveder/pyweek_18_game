@@ -49,6 +49,7 @@ class NetBase:
         self.conn = None
         self.game = None
         self.quit_loop = False
+        self.error = None
     
 
     def send_event(self, event):
@@ -74,7 +75,6 @@ class NetBase:
                 self.recv_event()
             except Exception, e:
                 import traceback; traceback.print_exc()
-                import pdb;pdb.set_trace()
                 log("Exception in recv loop.", True)
         
     
@@ -145,7 +145,8 @@ class Server(NetBase):
         
         if role == self.game.role:
             log("A user with the same role has connected.")
-            raise Exception()
+            self.error = "A user with the same role has connected."
+            return
         
         self.recv_event_loop()
     

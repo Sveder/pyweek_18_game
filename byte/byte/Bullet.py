@@ -14,7 +14,7 @@ class Bullet(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.game = game
         
-        self.image, self.rect = utilities.load_image(data.filepath(settings.BULLET_IMAGE_PATH))
+        self.image, self.rect = utilities.load_image(data.filepath(settings.BULLET_IMAGE_PATH), False)
         self.image.set_colorkey((255, 255, 255))
 
     
