@@ -212,8 +212,15 @@ class Game:
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_z:
                     self.spawn_zombie(send_event=True)
                 
-                if event.type == pygame.USEREVENT:
+                if event.type == settings.MUSIC_ENDED_EVENT:
                     self.board.start_music()
+                
+                if event.type == settings.SCHEDULE_AMBIENT_EVENT:
+                    pygame.time.set_timer(settings.PLAY_AMBIENT_EVENT, random.randint(2, 30))
+                
+                if event.type == settings.PLAY_AMBIENT_EVENT:
+                    pygame.time.set_timer(settings.PLAY_AMBIENT_EVENT, 0)
+                    self.board.play_ambient()
                     
                             
             

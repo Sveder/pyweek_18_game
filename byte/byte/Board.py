@@ -1,5 +1,6 @@
 import data
 import math
+import random
 
 import pygame
 
@@ -30,7 +31,7 @@ class Board(pygame.sprite.Sprite):
         
         self.last_brighten = (0, 0)
         
-        #Load music:
+        #Load music and ambient sound:
         self.tracks = []
         self.cur_track = 0
         for track in settings.MUSIC_TRACKS:
@@ -38,6 +39,11 @@ class Board(pygame.sprite.Sprite):
             self.tracks.append(sound)
             
         self.start_music()
+        
+        self.ambient_sounds = [pygame.mixer.Sound(data.filepath(settings.AMBIENT_ZOMBIE_SOUND))]
+        #Schedule an ambient event about every two minutes:
+        pygame.time.set_timer(settings.SCHEDULE_AMBIENT_EVENT, 2 * 60 * 1000)
+        
     
     def unmask(self, near_x, near_y):
         """
@@ -64,12 +70,14 @@ class Board(pygame.sprite.Sprite):
         
     def start_music(self):
         channel = self.tracks[self.cur_track].play()
-        channel.set_endevent(pygame.USEREVENT)
+        channel.set_endevent(settings.MUSIC_ENDED_EVENT)
         self.cur_track += 1
         self.cur_track %= len(self.tracks)
         
         
-        
+    def play_ambient(self):
+        sound = random.choice(self.ambient_sounds)
+        sound.play()
         
         
         

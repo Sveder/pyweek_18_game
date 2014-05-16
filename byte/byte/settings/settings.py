@@ -1,5 +1,7 @@
 import os
 
+import pygame
+
 #-------------------------------------------------------------------------------
 #Debug parameters:
 #-------------------------------------------------------------------------------
@@ -17,6 +19,10 @@ if not os.path.exists(os.path.join(os.curdir, "logs")):
 #-------------------------------------------------------------------------------
 BACKGROUND_FILL_COLOR  = (0 , 0 , 50)
 SCREEN_SIZE = (800 , 600)                   #The size of the game window
+
+MUSIC_ENDED_EVENT = pygame.USEREVENT
+SCHEDULE_AMBIENT_EVENT = pygame.USEREVENT + 1
+PLAY_AMBIENT_EVENT = pygame.USEREVENT + 2
 
 
 if DEBUG:
@@ -84,11 +90,16 @@ ZOMBIE_FOLDER = os.path.join(IMAGE_FOLDER, "zombies")
 SIMPLE_ZOMBIE_FOLDER = os.path.join(ZOMBIE_FOLDER, "simple")
 SIMPLE_ZOMBIE_PATH_FORMAT = os.path.join(SIMPLE_ZOMBIE_FOLDER, "simple_%s.png")
 
+ZOMBIE_SOUND_FOLDER = os.path.join(SOUND_FOLDER, "zombie")
+AMBIENT_ZOMBIE_SOUND = os.path.join(ZOMBIE_SOUND_FOLDER, "ambient_zombie_call.ogg")
+
+
 MUSIC_FOLDER = os.path.join(SOUND_FOLDER, "music")
 MUSIC_TRACKS = [
     os.path.join(MUSIC_FOLDER, "music_1.ogg"),
     os.path.join(MUSIC_FOLDER, "music_2.ogg"),
 ]
+
 
 
 #-------------------------------------------------------------------------------

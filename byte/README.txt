@@ -38,8 +38,15 @@ but unlimited with!
 
 Credits 
 -----------------
-Music: Chris Zabriskie - "Cylinder Two" and "Cylinder Eight" from:
+Music: "Cylinder Two" and "Cylinder Eight" by Chris Zabriskie from:
 http://freemusicarchive.org/music/Chris_Zabriskie/
+
+Sounds:
+Ambient zombie call - "Zombie Graboid Death Gasp.mp3" by XTDream from:
+http://freesound.org/people/XTDream/sounds/97668/
+
+
+
 
 
 
