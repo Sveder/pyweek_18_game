@@ -40,7 +40,9 @@ class Board(pygame.sprite.Sprite):
             
         self.start_music()
         
-        self.ambient_sounds = [pygame.mixer.Sound(data.filepath(settings.AMBIENT_ZOMBIE_SOUND))]
+        self.ambient_sounds = []
+        for i in settings.AMBIENT_SOUNDS:
+            self.ambient_sounds.append([pygame.mixer.Sound(data.filepath(i))])
         #Schedule an ambient event about every two minutes:
         pygame.time.set_timer(settings.SCHEDULE_AMBIENT_EVENT, 2 * 60 * 1000)
         

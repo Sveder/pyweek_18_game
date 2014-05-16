@@ -25,6 +25,8 @@ class Zombie(Actor.Actor):
         self.name = name
         self.precise_center = self.rect.center
         
+        pygame.mixer.Sound(data.filepath(settings.ZOMBIE_SPAWN_SOUND)).play()
+        
     
     def set_location(self, new_location):
         self.rect.center = new_location

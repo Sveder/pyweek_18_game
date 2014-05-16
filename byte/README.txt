@@ -42,8 +42,11 @@ Music: "Cylinder Two" and "Cylinder Eight" by Chris Zabriskie from:
 http://freemusicarchive.org/music/Chris_Zabriskie/
 
 Sounds:
-Ambient zombie call - "Zombie Graboid Death Gasp.mp3" by XTDream from:
+ambient_zombie_call.ogg- "Zombie Graboid Death Gasp.mp3" by XTDream from:
 http://freesound.org/people/XTDream/sounds/97668/
+
+far_away_zombie.ogg - "Zombie 15" by missozzy from:
+http://freesound.org/people/missozzy/sounds/169845/
 
 
 
