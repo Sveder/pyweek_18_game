@@ -137,6 +137,9 @@ class Game:
         for z in self.zombies:
             z.turn(*self.player.rect.center)
             z.step(*self.player.rect.center)
+            if (not z.dying) and z.rect.colliderect(self.player.rect):
+                self.player.hit(z)
+                
             self.screen.blit(z.image, z.rect)
             
     

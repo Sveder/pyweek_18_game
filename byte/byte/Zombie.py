@@ -27,28 +27,34 @@ class Zombie(Actor.Actor):
         
         pygame.mixer.Sound(data.filepath(settings.ZOMBIE_SPAWN_SOUND)).play()
         
-    
+        
     def set_location(self, new_location):
         self.rect.center = new_location
         self.precise_center = new_location
+    
     
     def die(self):
         """
         Oh no I'm dead.
         """
+        if self.dead: return 
         utilities.log("%s has been shot!" % self.name)
         self.dying = True
         pygame.mixer.Sound(data.filepath(settings.ZOMBIE_DEATH_SOUND)).play()
+    
     
     def step(self, toward_x, toward_y):
         """
         Move the zombie toward one step.
         """
+        if self.dead: return
+        
         elapsed = self.game.clock.get_time() / 1000.0
         
         if self.dying:
             self.image.set_alpha(255 - self.how_dead)
             self.how_dead += 2
+
             if self.how_dead > 255:
                 self.dead = True
             

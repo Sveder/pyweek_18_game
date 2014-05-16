@@ -51,6 +51,9 @@ http://freesound.org/people/missozzy/sounds/169845/
 death.ogg - "Monster Sounds » Slow Zombie Death" by scorpion67890 from:
 http://freesound.org/people/scorpion67890/sounds/169058/
 
+empty_shot.ogg - "Empty Gun Shot" by KlawyKogut from:
+http://freesound.org/people/KlawyKogut/sounds/154934/#
+
 
 
 

@@ -18,9 +18,7 @@ class Player(Actor.Actor):
         """
         utilities.log("Initiated player: %s" % role)
         Actor.Actor.__init__(self, game, settings.PLAYER_IMAGE_PATH_FORMAT, game.get_player_start_position)
-        
-        pygame.mixer.music.load(data.filepath(settings.PLAYER_SHOT_SOUND))
-        
+                
         self.role = role
         self.bullet_count = settings.BULLET_INITIAL_COUNT
         
@@ -28,11 +26,19 @@ class Player(Actor.Actor):
         utilities.log("Player (%s) is shooting at: %s, %s" % (self.role, at_x, at_y))
         if self.bullet_count == 0:
             utilities.log("Out of bullets")
-            #play empty sound
+            pygame.mixer.Sound(data.filepath(settings.PLAYER_EMPTY_SHOT_SOUND)).play()
             return
         
         self.bullet_count -= 1        
-        pygame.mixer.music.play(1)
+        pygame.mixer.Sound(data.filepath(settings.PLAYER_SHOT_SOUND)).play()
+        
+    
+    def hit(self, zombie):
+        """
+        Player was bitten by zombie.
+        """
+        zombie.die()
+        pygame.mixer.Sound(data.filepath(settings.PLAYER_HIT_SOUND)).play()
         
 
         

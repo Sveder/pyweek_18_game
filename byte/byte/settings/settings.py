@@ -80,7 +80,10 @@ SOUND_FOLDER = "sounds"
 BULLET_IMAGE_PATH = os.path.join(IMAGE_FOLDER, "bullet.png")
 
 PLAYER_IMAGE_PATH_FORMAT = os.path.join(IMAGE_FOLDER, "player", "player_%s.png")
-PLAYER_SHOT_SOUND = os.path.join(SOUND_FOLDER, "shot.mp3")
+PLAYER_SHOT_SOUND = os.path.join(SOUND_FOLDER, "shot.ogg")
+PLAYER_EMPTY_SHOT_SOUND = os.path.join(SOUND_FOLDER, "empty_shot.ogg")
+
+PLAYER_HIT_SOUND = os.path.join(SOUND_FOLDER, "player_hit.ogg")
 
 MASKED_BG_IMAGE_PATH = os.path.join(IMAGE_FOLDER, "masked_bg.jpg")
 UNMASKED_BG_IMAGE_PATH = os.path.join(IMAGE_FOLDER, "unmasked_bg.jpg")

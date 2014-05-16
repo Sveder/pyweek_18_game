@@ -38,8 +38,26 @@ but unlimited with!
 
 Credits 
 -----------------
-Music: Chris Zabriskie - "Cylinder Two" and "Cylinder Eight" from:
+Music: "Cylinder Two" and "Cylinder Eight" by Chris Zabriskie from:
 http://freemusicarchive.org/music/Chris_Zabriskie/
+
+Sounds:
+ambient_zombie_call.ogg- "Zombie Graboid Death Gasp.mp3" by XTDream from:
+http://freesound.org/people/XTDream/sounds/97668/
+
+far_away_zombie.ogg - "Zombie 15" by missozzy from:
+http://freesound.org/people/missozzy/sounds/169845/
+
+death.ogg - "Monster Sounds » Slow Zombie Death" by scorpion67890 from:
+http://freesound.org/people/scorpion67890/sounds/169058/
+
+empty_shot.ogg - "Empty Gun Shot" by KlawyKogut from:
+http://freesound.org/people/KlawyKogut/sounds/154934/#
+
+
+
+
+
 
 
 
