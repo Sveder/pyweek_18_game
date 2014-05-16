@@ -23,8 +23,13 @@ class Zombie(Actor.Actor):
         self.dying = False
         self.how_dead = 0
         self.name = name
-        self.slower = 0
+        self.precise_center = self.rect.center
         
+    
+    def set_location(self, new_location):
+        self.rect.center = new_location
+        self.precise_center = new_location
+    
     def die(self):
         """
         Oh no I'm dead.
@@ -36,30 +41,31 @@ class Zombie(Actor.Actor):
         """
         Move the zombie toward one step.
         """
+        elapsed = self.game.clock.get_time() / 1000.0
+        
         if self.dying:
             self.image.set_alpha(255 - self.how_dead)
-            self.how_dead += 3
+            self.how_dead += 2
             if self.how_dead > 255:
                 self.dead = True
             
             return
         
-        self.slower += 1
-        if self.slower % 7:
-            return
-        
-        new_x = self.rect.center[0]
-        if toward_x > self.rect.center[0]:
-            new_x = (self.rect.center[0] + settings.SIMPLE_ZOMBIE_STEP)
+        new_x = self.precise_center[0]
+        step = settings.SIMPLE_ZOMBIE_STEP * elapsed
+        if toward_x > self.precise_center[0]:
+            new_x = self.precise_center[0] + step
         else:
-            new_x = self.rect.center[0] - settings.SIMPLE_ZOMBIE_STEP
+            new_x = self.precise_center[0] - step
         
-        new_y = self.rect.center[1]    
-        if toward_y > self.rect.center[1]:
-            new_y = self.rect.center[1] + settings.SIMPLE_ZOMBIE_STEP
+        new_y = self.precise_center[1]    
+        if toward_y > self.precise_center[1]:
+            new_y = self.precise_center[1] + step
         else:
-            new_y = self.rect.center[1] - settings.SIMPLE_ZOMBIE_STEP
-            
-        self.rect.center = (new_x, new_y)
+            new_y = self.precise_center[1] - step
+        
+        print (new_x, new_y)
+        self.precise_center = (new_x, new_y)
+        self.rect.center = (round(new_x), round(new_y))
 
     

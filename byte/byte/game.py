@@ -104,7 +104,7 @@ class Game:
         """
         zombie = Zombie.Zombie(self)
         if loc:
-            zombie.rect.center = loc
+            zombie.set_location(loc)
         zombie.turn(*self.player.rect.center)
         self.zombies.append(zombie)
         if send_event:
