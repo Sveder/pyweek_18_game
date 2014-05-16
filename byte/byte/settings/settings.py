@@ -90,8 +90,12 @@ UNMASKED_BG_IMAGE_PATH = os.path.join(IMAGE_FOLDER, "unmasked_bg.jpg")
 
 ZOMBIE_FOLDER = os.path.join(IMAGE_FOLDER, "zombies")
 
-SIMPLE_ZOMBIE_FOLDER = os.path.join(ZOMBIE_FOLDER, "simple")
-SIMPLE_ZOMBIE_PATH_FORMAT = os.path.join(SIMPLE_ZOMBIE_FOLDER, "simple_%s.png")
+SIMPLE_ZOMBIE_FORMATS = [
+    os.path.join(ZOMBIE_FOLDER, "simple_1", "simple_%s.png"),
+    os.path.join(ZOMBIE_FOLDER, "simple_2", "simple2_%s.png"),
+    os.path.join(ZOMBIE_FOLDER, "simple_3", "simple3_%s.png"),
+    os.path.join(ZOMBIE_FOLDER, "simple_4", "simple4_%s.png"),
+]
 
 ZOMBIE_SOUND_FOLDER = os.path.join(SOUND_FOLDER, "zombie")
 AMBIENT_ZOMBIE_SOUND = os.path.join(ZOMBIE_SOUND_FOLDER, "ambient_zombie_call.ogg")

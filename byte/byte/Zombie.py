@@ -1,6 +1,7 @@
 import PIL
 import data
 import math
+import random
 
 import pygame
 
@@ -17,7 +18,8 @@ class Zombie(Actor.Actor):
         """
         Initialize the zombie parameters.
         """
-        Actor.Actor.__init__(self, game, settings.SIMPLE_ZOMBIE_PATH_FORMAT, game.get_zombie_spawn)
+        sprite_format = random.choice(settings.SIMPLE_ZOMBIE_FORMATS)
+        Actor.Actor.__init__(self, game, sprite_format, game.get_zombie_spawn)
         
         self.dead = False
         self.dying = False

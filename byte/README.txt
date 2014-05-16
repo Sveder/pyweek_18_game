@@ -54,6 +54,10 @@ http://freesound.org/people/scorpion67890/sounds/169058/
 empty_shot.ogg - "Empty Gun Shot" by KlawyKogut from:
 http://freesound.org/people/KlawyKogut/sounds/154934/#
 
+zombie sprites - "Zombie RPG sprites" by Curt from:
+http://opengameart.org/content/zombie-rpg-sprites
+"Curt - cjc83486 http://opengameart.org/content/zombie-rpg-sprites"
+
 
 
 
