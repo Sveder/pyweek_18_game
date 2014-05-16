@@ -38,6 +38,7 @@ class Zombie(Actor.Actor):
         """
         utilities.log("%s has been shot!" % self.name)
         self.dying = True
+        pygame.mixer.Sound(data.filepath(settings.ZOMBIE_DEATH_SOUND)).play()
     
     def step(self, toward_x, toward_y):
         """

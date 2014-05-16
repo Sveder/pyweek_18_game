@@ -93,6 +93,7 @@ SIMPLE_ZOMBIE_PATH_FORMAT = os.path.join(SIMPLE_ZOMBIE_FOLDER, "simple_%s.png")
 ZOMBIE_SOUND_FOLDER = os.path.join(SOUND_FOLDER, "zombie")
 AMBIENT_ZOMBIE_SOUND = os.path.join(ZOMBIE_SOUND_FOLDER, "ambient_zombie_call.ogg")
 ZOMBIE_SPAWN_SOUND = os.path.join(ZOMBIE_SOUND_FOLDER, "far_away_zombie.ogg")
+ZOMBIE_DEATH_SOUND = os.path.join(ZOMBIE_SOUND_FOLDER, "death.ogg")
 
 
 MUSIC_FOLDER = os.path.join(SOUND_FOLDER, "music")

@@ -48,6 +48,11 @@ http://freesound.org/people/XTDream/sounds/97668/
 far_away_zombie.ogg - "Zombie 15" by missozzy from:
 http://freesound.org/people/missozzy/sounds/169845/
 
+death.ogg - "Monster Sounds » Slow Zombie Death" by scorpion67890 from:
+http://freesound.org/people/scorpion67890/sounds/169058/
+
+
+
 
 
 

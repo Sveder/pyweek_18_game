@@ -42,7 +42,7 @@ class Board(pygame.sprite.Sprite):
         
         self.ambient_sounds = []
         for i in settings.AMBIENT_SOUNDS:
-            self.ambient_sounds.append([pygame.mixer.Sound(data.filepath(i))])
+            self.ambient_sounds.append(pygame.mixer.Sound(data.filepath(i)))
         #Schedule an ambient event about every two minutes:
         pygame.time.set_timer(settings.SCHEDULE_AMBIENT_EVENT, 2 * 60 * 1000)
         
@@ -62,11 +62,7 @@ class Board(pygame.sprite.Sprite):
 
     def _actual_unmask(self, (near_x, near_y), surface):
         rect = pygame.Rect(near_x - HALF_RECT_TEMP, near_y - HALF_RECT_TEMP, BRIGHTEN_RECT_TEMP, BRIGHTEN_RECT_TEMP)
-        
-        
         self.image.blit(surface, rect, rect)
-        
-        
         self.game.dirty_rects.append(rect)
         
         
@@ -79,6 +75,7 @@ class Board(pygame.sprite.Sprite):
         
     def play_ambient(self):
         sound = random.choice(self.ambient_sounds)
+        sound.set_volume(0.8)
         sound.play()
         
         
