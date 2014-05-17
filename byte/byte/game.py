@@ -156,6 +156,8 @@ class Game:
         for z in self.zombies:
             if z.rect.collidepoint(*where):
                 z.die()
+                
+      
         
     
     def shoot(self, where, send_event=False):
@@ -215,6 +217,10 @@ class Game:
                 
                 if self.role == settings.ROLE_SHOOTER and event.type == pygame.MOUSEBUTTONUP:
                     mouse_pos = pygame.mouse.get_pos()
+                    if self.player.rect.collidepoint(*mouse_pos):
+                        self.player.joy()
+                        continue
+                    
                     self.shoot(mouse_pos, send_event=True)
                 
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_z:

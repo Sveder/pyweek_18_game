@@ -84,6 +84,7 @@ BULLET_IMAGE_PATH = os.path.join(IMAGE_FOLDER, "bullet.png")
 
 PLAYER_IMAGE_PATH_FORMAT = os.path.join(IMAGE_FOLDER, "player", "player_small_%s.png")
 PLAYER_SHOT_SOUND = os.path.join(SOUND_FOLDER, "shot.ogg")
+PLAYER_HAPPY_SOUND = os.path.join(SOUND_FOLDER, "happy_happy_joy_joy.ogg")
 PLAYER_EMPTY_SHOT_SOUND = os.path.join(SOUND_FOLDER, "empty_shot.ogg")
 
 PLAYER_HIT_SOUND = os.path.join(SOUND_FOLDER, "player_hit.ogg")

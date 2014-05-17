@@ -53,6 +53,10 @@ class Player(Actor.PlayerActor):
             if self.shot_frame >= 4:
                 self.is_shooting = False
                 self.shot_frame = 0
+    
+    def joy(self):
+        pygame.mixer.Sound(data.filepath(settings.PLAYER_HAPPY_SOUND)).play()
+        
         
         
 class Shooter(Player):
