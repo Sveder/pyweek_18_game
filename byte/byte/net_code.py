@@ -13,9 +13,10 @@ from utilities import log
 
 #Messages that are passed through the net and some utility classes to make it easier to instantiate them
 class Message:
-    def __init__(self, msg_type=None, where=(0, 0)):
+    def __init__(self, msg_type=None, where=(0, 0), extra=0):
         self.msg_type = msg_type
         self.where = where
+        self.extra = extra
     
     def __repr__(self):
         return "Message %s at %s." % (self.msg_type, self.where)
@@ -30,8 +31,8 @@ class ShotFired(Message):
         Message.__init__(self, settings.NET_MSG_SHOT_FIRED, where)
 
 class NewZombie(Message):
-    def __init__(self, where):
-        Message.__init__(self, settings.NET_MSG_ZOMBIE_CREATED, where)
+    def __init__(self, where, speed):
+        Message.__init__(self, settings.NET_MSG_ZOMBIE_CREATED, where, speed)
         
 class QuitGame(Message):
     def __init__(self):
@@ -58,8 +59,8 @@ class NetBase:
         """
         if not self.is_connected or not self.conn:
             return
-        
-        data = struct.pack("<iii", event.msg_type, event.where[0], event.where[1])
+
+        data = struct.pack("<iiii", event.msg_type, event.where[0], event.where[1], event.extra)
         self.conn.send(data)
     
     
@@ -84,18 +85,18 @@ class NetBase:
         if ready[0]:
             data = self.conn.recv(4096)
     
-            for message_start in xrange(0, len(data), struct.calcsize("<iii")):
-                message = data[message_start:12]
+            for message_start in xrange(0, len(data), struct.calcsize("<iiii")):
+                message = data[message_start:struct.calcsize("<iiii")]
                 if not message: continue
                 
                 #Discard fragmented and unloadable messages:
                 try:
-                    message = struct.unpack("<iii", message)
+                    message = struct.unpack("<iiii", message)
                 except:
                     continue
                 
                 #Recreate the Message object:
-                msg_object = Message(message[0], (message[1], message[2]))
+                msg_object = Message(message[0], (message[1], message[2]), message[3])
                 log("Received message from remote: %s" % msg_object)
                 
                 self._add_to_game_queue(msg_object)

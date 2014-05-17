@@ -35,6 +35,9 @@ class Zombie(Actor.Actor):
         self.rect.center = new_location
         self.precise_center = new_location
     
+    def set_speed(self, speed):
+        self.speed = speed
+    
     
     def die(self):
         """

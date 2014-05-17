@@ -106,7 +106,7 @@ class Game:
         
         self.net_object.quit_loop = True
         
-    def spawn_zombie(self, loc=None, send_event=False):
+    def spawn_zombie(self, loc=None, speed=None, send_event=False):
         """
         Spawn a zombie in a random location far from player. If location is given and is a two
         int tuple, the zombie will spawn there.
@@ -114,10 +114,14 @@ class Game:
         zombie = Zombie.Zombie(self)
         if loc:
             zombie.set_location(loc)
+        
+        if speed:
+            zombie.set_speed(speed)
+            
         zombie.turn(*self.player.rect.center)
         self.zombies.append(zombie)
         if send_event:
-            self.net_object.send_event(net_code.NewZombie(zombie.rect.center))
+            self.net_object.send_event(net_code.NewZombie(zombie.rect.center, zombie.speed))
         
     
     def get_zombie_spawn(self):
@@ -199,12 +203,12 @@ class Game:
                         return
                     
                     elif event.msg_type == settings.NET_MSG_ZOMBIE_CREATED:
-                        self.spawn_zombie(event.where, send_event=False)
+                        self.spawn_zombie(event.where, event.extra, send_event=False)
 
                 self.event_list = []
                 
-            ###if not self.net_object.is_connected:
-            ###    continue
+            if not self.net_object.is_connected:
+                continue
             
             if self.zombies == []:
                 #Spawn a zombie for good measure:
