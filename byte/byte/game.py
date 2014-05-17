@@ -46,6 +46,7 @@ class Game:
         self.port = port
         self.is_server = is_server
         self.peer_connected = False
+        self.should_start = False
         
         #This will definitely move soon:
         if is_server:
@@ -104,8 +105,10 @@ class Game:
         
         pygame.display.update()
         self.main_loop()
-        
         self.net_object.send_event(net_code.QuitGame())
+        
+        self.game_over()
+
         log("Player exited!")
         
         self.net_object.quit_loop = True
@@ -193,9 +196,15 @@ class Game:
         last_mouse_x = last_mouse_y = 0
         self.last_unmask_x = self.last_unmask_y = 0
         
+        if not self.is_server:
+            self.net_object.send_event(net_code.StartGame())
+            
         while 1:
             counter += 1
             self.clock.tick()
+            
+            if self.player.life == 0:
+                return
             
             with self.event_list_lock:
                 if self.net_object.error:
@@ -218,9 +227,14 @@ class Game:
                     
                     elif event.msg_type == settings.NET_MSG_RELOAD:
                         self.player.reload()
+                    
+                    elif event.msg_type == settings.NET_MSG_START_GAME:
+                        self.should_start = True
 
                 self.event_list = []
-                
+            
+            if self.is_server and not self.should_start:
+                continue
             
             if self.zombies == [] and self.net_object.is_connected:
                 #Spawn a zombie for good measure:
@@ -302,7 +316,7 @@ class Game:
                     self.should_draw_particles = False
             
             self.screen.blit(self.bullets.render_bullets(self.player.bullet_count), settings.BULLET_COUNTER_LOCATION)
-            if self.player.life <= 0:
+            if not self.player.life <= 0:
                 heart_surface = self.hearts.render(self.player.life)
                 where_to_put_hearts = settings.SCREEN_SIZE[0] - heart_surface.get_width() - 10
                 self.screen.blit(heart_surface, (where_to_put_hearts, 10))
@@ -318,7 +332,24 @@ class Game:
             
             #print self.clock.get_fps()
 
+    
+    def game_over(self):
+        self.screen.fill((0,0,0))
+        
+        skull_image, skull_rect = utilities.load_image(data.filepath(settings.SKULL_IMAGE_PATH), False)
 
+        while 1:
+            for event in pygame.event.get():
+                if (event.type == pygame.QUIT) or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                    return
+                
+            if not random.randint(0, 10) % 5:
+                x = random.choice(range(self.screen.get_width()))
+                y = random.choice(range(self.screen.get_height()))
+                self.screen.blit(skull_image, (x, y))
+                
+            pygame.display.update()
+    
     def get_player_start_position(self):
         """
         The player initial position is probably the center. Mostly?

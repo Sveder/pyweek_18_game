@@ -84,6 +84,7 @@ SOUND_FOLDER = "sounds"
 
 BULLET_IMAGE_PATH = os.path.join(IMAGE_FOLDER, "bullet.png")
 HEART_IMAGE_PATH = os.path.join(IMAGE_FOLDER, "heart.png")
+SKULL_IMAGE_PATH = os.path.join(IMAGE_FOLDER, "skull.png")
 
 PLAYER_IMAGE_PATH_FORMAT = os.path.join(IMAGE_FOLDER, "player", "player_small_%s.png")
 
@@ -137,4 +138,4 @@ NET_MSG_FLASHLIGHT = 2
 NET_MSG_SHOT_FIRED = 3
 NET_MSG_QUIT = 4
 NET_MSG_RELOAD = 5
-
+NET_MSG_START_GAME = 6
