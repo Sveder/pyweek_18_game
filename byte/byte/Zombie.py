@@ -26,6 +26,7 @@ class Zombie(Actor.Actor):
         self.how_dead = 0
         self.name = name
         self.precise_center = self.rect.center
+        self.speed = random.choice(settings.SIMPLE_ZOMBIE_STEP_RANGE)
         
         pygame.mixer.Sound(data.filepath(settings.ZOMBIE_SPAWN_SOUND)).play()
         
@@ -63,7 +64,8 @@ class Zombie(Actor.Actor):
             return
         
         new_x = self.precise_center[0]
-        step = settings.SIMPLE_ZOMBIE_STEP * elapsed
+        step = self.speed * elapsed
+        
         if toward_x > self.precise_center[0]:
             new_x = self.precise_center[0] + step
         else:
