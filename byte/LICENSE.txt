@@ -1,1 +1,6 @@
-Licence: short_licence
+This game is licensed Creative Commons Attribution 4.0 International (CC BY 4.0):
+pyweek.org may redistribute the game, under the same license.
+To read license:
+http://creativecommons.org/licenses/by/4.0/
+
+Note some of the graphics' license is different, as attirbuted in readme.txt.
