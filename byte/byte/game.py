@@ -4,6 +4,7 @@ import random
 import threading
 
 import pygame
+from PyIgnition import PyIgnition
 
 import Board
 import Bullet
@@ -28,6 +29,10 @@ class Game:
         
         self.clock = pygame.time.Clock()
         self.screen = None
+        
+        self.particle_frames = settings.GUN_PARTICLE_FRAMES
+        self.particle_gen = None
+        self.should_draw_particles = False
         
         #Remote server communicates using sockets and the net code adds events to this list:
         self.event_list = []
@@ -196,8 +201,8 @@ class Game:
 
                 self.event_list = []
                 
-            if not self.net_object.is_connected:
-                continue
+            ###if not self.net_object.is_connected:
+            ###    continue
             
             if self.zombies == []:
                 #Spawn a zombie for good measure:
@@ -257,6 +262,14 @@ class Game:
             self.player.step()
             self.screen.blit(self.player.image, self.player.rect)
             
+            if self.should_draw_particles:
+                self.particle_gen.Update()
+                self.particle_gen.Redraw()
+                self.particle_frames += 1
+                
+                if self.particle_frames > settings.GUN_PARTICLE_FRAMES:
+                    self.should_draw_particles = False
+            
             self.screen.blit(self.bullets.render_bullets(self.player.bullet_count), settings.BULLET_COUNTER_LOCATION)
             
             if self.dirty_rects and settings.ONLY_BLIT_DIRTY_RECTS:
@@ -268,7 +281,7 @@ class Game:
             last_mouse_y = mouse_y
             last_mouse_x = mouse_x
             
-            print self.clock.get_fps()
+            #print self.clock.get_fps()
 
 
     def get_player_start_position(self):
@@ -289,6 +302,20 @@ class Game:
             net_role = "server"
         
         pygame.display.set_caption(caption % (role, net_role))
+        
+        
+    def gun_particles(self, _from, direction):
+        self.should_draw_particles = True
+        self.particle_frames = 0
+        self.particle_gen = PyIgnition.ParticleEffect(self.screen, (0, 0), settings.SCREEN_SIZE)
+
+        particle = self.particle_gen.CreateSource(_from, initspeed = 20.0, initdirection = direction, initspeedrandrange = 0.0, initdirectionrandrange = 0.5, particlesperframe = 3, particlelife = 5, drawtype = PyIgnition.DRAWTYPE_CIRCLE, colour = (200, 0, 0), length = 2.0)
+        direction = 360 - direction
+        particle.SetInitDirection(1.5 + direction / 360.0 * 6.5)
+        
+        
+        
+        
     
     
 
