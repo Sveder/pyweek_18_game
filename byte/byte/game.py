@@ -179,10 +179,11 @@ class Game:
         """
         A shot happened, handle everything for it.
         """
-        self.player.shoot(*where)
-        if send_event:
-            self.net_object.send_event(net_code.ShotFired(where))
-        self.shoot_at_zombies(where)
+        shot_happened = self.player.shoot(*where)
+        if shot_happened:
+            if send_event:
+                self.net_object.send_event(net_code.ShotFired(where))
+            self.shoot_at_zombies(where)
         
     
     def main_loop(self):

@@ -31,12 +31,13 @@ class Player(Actor.PlayerActor):
         if self.bullet_count == 0:
             utilities.log("Out of bullets")
             pygame.mixer.Sound(data.filepath(settings.PLAYER_EMPTY_SHOT_SOUND)).play()
-            return
+            return False
         
         self.is_shooting = True
         self.bullet_count -= 1        
         pygame.mixer.Sound(data.filepath(settings.PLAYER_SHOT_SOUND)).play()
         self.game.gun_particles(self.rect.center, self._cur_angle)
+        return True
     
     def reload(self):
         pygame.mixer.Sound(data.filepath(settings.PLAYER_RELOAD_SOUND)).play()
