@@ -10,23 +10,32 @@ License: see LICENSE.txt
 Running the Game
 ----------------
 
+TESTING NOTICE: This is a multiplayer game by nature. To run a server you'll probably need to configure your
+NAT (usually a router, for home users) to tunnel the selected port to your specific subnet-network
+ip. If you want to test it with me, FEEL FREE to email me at m@sveder.com and we'll work out a time.
+You can also test it locally by running the commands below, and opening two instances.
+
 Open a terminal / console and "cd" to the game directory and run:
 
 run_game.exe <network_role> <game_role> <host> <port>
 
 where network role is: y - server
                        n - client
-                       s - single player
                        
 and game roles are: shooter, lighter
 
 Example:
-run_game.exe n shooter 84.108.247.140 8080
+run_game.exe n shooter 0.0.0.0 8080
 
 run_game.exe y lighter 84.108.247.140 8080
 
+LOCAL TESTING COMMANDS:
+To test this locally, you can open two consoles and run these two commands each in its own console:
 
+run_game.exe y shooter 0.0.0.0 8080
+run_game.exe n lighter 84.108.247.140 8080
 
+You'll get two instance running correctly you can move the mouse from one to the other and experience both terrifying roles :)
 
 
 How to Play the Game
