@@ -38,6 +38,10 @@ class QuitGame(Message):
     def __init__(self):
         Message.__init__(self, settings.NET_MSG_QUIT)
     
+class Reload(Message):
+    def __init__(self):
+        Message.__init__(self, settings.NET_MSG_RELOAD)
+    
 
 
 class NetBase:

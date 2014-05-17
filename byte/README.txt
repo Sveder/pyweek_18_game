@@ -71,6 +71,9 @@ Visit his portfolio: http://remusprites.carbonmade.com/
 happy_happy_joy_joy.ogg - (definitely not a) "Suicide note" by 11linda:
 http://freesound.org/people/11linda/sounds/181986/
 
+heart.png - "Larger simple heart" by eylvisaker from:
+http://opengameart.org/content/larger-simple-heart
+
 
 
 

@@ -24,6 +24,7 @@ class Zombie(Actor.Actor):
         self.dead = False
         self.dying = False
         self.how_dead = 0
+        
         self.name = name
         self.precise_center = self.rect.center
         self.speed = random.choice(settings.SIMPLE_ZOMBIE_STEP_RANGE)
@@ -85,3 +86,23 @@ class Zombie(Actor.Actor):
         self.rect.center = (round(new_x), round(new_y))
 
     
+
+class BlinkingZombie(Zombie):
+    def __init__(self, game, name="BlinkingZombie"):
+        Zombie.__init__(self, game, name)
+        self.under_light = False
+        self.under_light_count = 0
+        
+    
+    def step(self, toward_x, toward_y):
+        if self.rect.collidepoint(self.game.last_unmask_x, self.game.last_unmask_y):
+            self.under_light = True
+            self.under_light_count += 1
+            
+        if self.under_light and self.under_light_count > 20 and not self.dying:
+            self.rect.center = self.game.get_zombie_spawn()
+        
+        return Zombie.step(self, toward_x, toward_y)
+        
+        
+        

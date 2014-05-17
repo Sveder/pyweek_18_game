@@ -87,7 +87,3 @@ class Lighter(Player):
     def __init__(self, game):
         Player.__init__(self, game, settings.ROLE_LIGHTER)
     
-    
-    
-    
-    

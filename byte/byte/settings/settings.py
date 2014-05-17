@@ -38,7 +38,7 @@ GUN_PARTICLE_FRAMES = 5
 SIMPLE_ZOMBIE_STEP_RANGE = range(20, 35)
 SCALE_ZOMBIES_AFTER = 5
 
-ZOMBIE_SPAWN_AREA_WIDTH_PERCENT = 0.3
+ZOMBIE_SPAWN_AREA_WIDTH_PERCENT = 0.2
 ZOMBIE_SPAWN_AREA_HEIGHT_PERCENT = 0.1
 
 ROLE_NONE = 0
@@ -83,8 +83,11 @@ IMAGE_FOLDER = "images"
 SOUND_FOLDER = "sounds"
 
 BULLET_IMAGE_PATH = os.path.join(IMAGE_FOLDER, "bullet.png")
+HEART_IMAGE_PATH = os.path.join(IMAGE_FOLDER, "heart.png")
 
 PLAYER_IMAGE_PATH_FORMAT = os.path.join(IMAGE_FOLDER, "player", "player_small_%s.png")
+
+
 PLAYER_SHOT_SOUND = os.path.join(SOUND_FOLDER, "shot.ogg")
 PLAYER_HAPPY_SOUND = os.path.join(SOUND_FOLDER, "happy_happy_joy_joy.ogg")
 PLAYER_EMPTY_SHOT_SOUND = os.path.join(SOUND_FOLDER, "empty_shot.ogg")
@@ -126,14 +129,12 @@ AMBIENT_SOUNDS = [
 #Net parameters:
 #-------------------------------------------------------------------------------
 
-NET_MAGIC_HEADER_SERVER = "server_header0.1>>>"
-NET_MAGIC_HEADER_CLIENT = "client_header0.1>>>"
+NET_MAGIC_HEADER_SERVER = "server_header0.2>>>"
+NET_MAGIC_HEADER_CLIENT = "client_header0.2>>>"
 
 NET_MSG_ZOMBIE_CREATED = 1
 NET_MSG_FLASHLIGHT = 2
 NET_MSG_SHOT_FIRED = 3
 NET_MSG_QUIT = 4
-
-
-
+NET_MSG_RELOAD = 5
 

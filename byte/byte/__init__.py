@@ -1,3 +1,3 @@
 if __name__ == "__main__":
-    import main
-    main.main()
+    import __main__
+    __main__.main()

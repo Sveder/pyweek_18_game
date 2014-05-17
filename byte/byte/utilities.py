@@ -26,15 +26,6 @@ def load_image(path, convert=True):
     return image , rect
 
 
-###def resize_image(path , x , y):
-###    """
-###    Resizes the image in the path path to the specified size
-###    """
-###    image_obj = Image.open(path)
-###    resized_image = image_obj.resize((x , y))
-###    resized_image.save(path)
-
-
 def log(message, trace=False):
     """
     Log the message given wherever you can.
@@ -57,7 +48,7 @@ def log(message, trace=False):
         g_open_log_file.write(message + "\n")
             
 
-
+#From pygame cookbook:
 class spritesheet(object):
     def __init__(self, filename):
         try:

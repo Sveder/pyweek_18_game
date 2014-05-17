@@ -45,19 +45,23 @@ class Board(pygame.sprite.Sprite):
             self.ambient_sounds.append(pygame.mixer.Sound(data.filepath(i)))
         #Schedule an ambient event about every two minutes:
         pygame.time.set_timer(settings.SCHEDULE_AMBIENT_EVENT, 2 * 60 * 1000)
-        
+    
+    def reset(self):
+        self.image = self.masked_image.copy()
+        self.image.set_colorkey((255, 255,0))
     
     def unmask(self, near_x, near_y, radius=BRIGHTEN_RECT_TEMP, is_lighter=False):
         """
         Brighten (unmask) the area near the given coordinates.
         """
-        self._actual_unmask(self.last_brighten, self.masked_image, radius=radius)
+        #self._actual_unmask(self.last_brighten, self.masked_image, radius=radius)
         
         brighten_rect = pygame.draw.circle(self.image, (255, 255,0), (near_x, near_y), radius/2)
         
         if is_lighter:
             brighten_rect = pygame.draw.circle(self.image, (50, 0, 0), (near_x, near_y), 40)
             brighten_rect = pygame.draw.circle(self.image, (255, 255,0), (near_x, near_y), 38)
+            
         self.game.dirty_rects.append(brighten_rect)
         
         self.last_brighten = (near_x, near_y)

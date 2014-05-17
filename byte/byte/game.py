@@ -7,6 +7,7 @@ import pygame
 from PyIgnition import PyIgnition
 
 import Board
+import Heart
 import Bullet
 import Player
 import Zombie
@@ -14,9 +15,6 @@ import net_code
 import settings
 import utilities
 from utilities import log
-
-ip = "localhost"
-port = 6317
 
 
 
@@ -101,6 +99,7 @@ class Game:
         self.zombies = []
         
         self.bullets = Bullet.Bullet(self)
+        self.hearts = Heart.Heart(self)
         
         
         pygame.display.update()
@@ -192,7 +191,7 @@ class Game:
         """
         counter = 0
         last_mouse_x = last_mouse_y = 0
-        last_unmask_x = last_unmask_y = 0
+        self.last_unmask_x = self.last_unmask_y = 0
         
         while 1:
             counter += 1
@@ -209,20 +208,21 @@ class Game:
                         self.shoot(event.where, send_event=False)
                     
                     elif event.msg_type == settings.NET_MSG_FLASHLIGHT:
-                        last_unmask_x, last_unmask_y = event.where
+                        self.last_unmask_x, self.last_unmask_y = event.where
                     
                     elif event.msg_type == settings.NET_MSG_QUIT:
                         return
                     
                     elif event.msg_type == settings.NET_MSG_ZOMBIE_CREATED:
                         self.spawn_zombie(event.where, event.extra, send_event=False)
+                    
+                    elif event.msg_type == settings.NET_MSG_RELOAD:
+                        self.player.reload()
 
                 self.event_list = []
                 
-            if not self.net_object.is_connected:
-                continue
             
-            if self.zombies == []:
+            if self.zombies == [] and self.net_object.is_connected:
                 #Spawn a zombie for good measure:
                 if self.is_server:
                     for i in xrange(int(round((self.scale_zombies - 1) * 2 ) + 1)):
@@ -236,7 +236,6 @@ class Game:
                     self.buttons_pressed = pygame.mouse.get_pressed()
                     
                 if self.role == settings.ROLE_SHOOTER and event.type == pygame.MOUSEBUTTONUP:
-                    print self.buttons_pressed
                     if self.buttons_pressed[0]:
                         mouse_pos = pygame.mouse.get_pos()
                         if self.player.rect.collidepoint(*mouse_pos):
@@ -246,6 +245,7 @@ class Game:
                         self.shoot(mouse_pos, send_event=True)
                     
                     if self.buttons_pressed[2]:
+                        self.net_object.send_event(net_code.Reload())
                         self.player.reload()
                     
                     self.buttons_pressed = (0,0,0)
@@ -268,20 +268,22 @@ class Game:
                     
             mouse_x, mouse_y = pygame.mouse.get_pos()
             
-            #If the mouse moved and you are the lighter, fire a network event:
-            if (self.role == settings.ROLE_LIGHTER) and (last_mouse_y != mouse_y or last_mouse_x != mouse_x):
-                self.board.unmask(mouse_x, mouse_y, is_lighter=True)
-                #But not too often, so that not to overwhelm the network:
-                if not counter % 2:
-                    self.net_object.send_event(net_code.FlashlightShine((mouse_x, mouse_y)))
-            
-            elif self.role == settings.ROLE_SHOOTER:
-                self.board.unmask(last_unmask_x, last_unmask_y, 80)
-                self.board.unmask(self.player.rect.center[0], self.player.rect.center[1], 150)
-            
             #Start drawing:
+            self.board.reset()
             self.screen.fill((0,0,0))
             self.screen.blit(self.board.unmasked_image, self.board.rect)
+            
+            
+            #If the mouse moved and you are the lighter, fire a network event:
+            if (self.role == settings.ROLE_LIGHTER):
+                self.board.unmask(mouse_x, mouse_y, is_lighter=True)
+                #But not too often, so that not to overwhelm the network:
+                if not (last_mouse_y != mouse_y or last_mouse_x != mouse_x) or counter % 2:
+                    self.net_object.send_event(net_code.FlashlightShine((mouse_x, mouse_y)))
+                    
+            if self.role == settings.ROLE_SHOOTER:
+                self.board.unmask(self.player.rect.center[0], self.player.rect.center[1], 200)
+                self.board.unmask(self.last_unmask_x, self.last_unmask_y, 80)
             
             self.render_zombies()
             
@@ -300,6 +302,10 @@ class Game:
                     self.should_draw_particles = False
             
             self.screen.blit(self.bullets.render_bullets(self.player.bullet_count), settings.BULLET_COUNTER_LOCATION)
+            if self.player.life <= 0:
+                heart_surface = self.hearts.render(self.player.life)
+                where_to_put_hearts = settings.SCREEN_SIZE[0] - heart_surface.get_width() - 10
+                self.screen.blit(heart_surface, (where_to_put_hearts, 10))
             
             if self.dirty_rects and settings.ONLY_BLIT_DIRTY_RECTS:
                 pygame.display.update(self.dirty_rects)
@@ -321,7 +327,7 @@ class Game:
     
     
     def set_caption(self):
-        caption = "Byte - a zombie game (%s - %s)"
+        caption = "8-Bit Biters - a zombie game (%s - %s)"
         role = "Shooter"
         if self.role == settings.ROLE_LIGHTER:
             role = "Lighter"
