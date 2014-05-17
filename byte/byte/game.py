@@ -219,8 +219,8 @@ class Game:
 
                 self.event_list = []
                 
-            ##if not self.net_object.is_connected:
-            ##    continue
+            if not self.net_object.is_connected:
+                continue
             
             if self.zombies == []:
                 #Spawn a zombie for good measure:
@@ -276,21 +276,15 @@ class Game:
                     self.net_object.send_event(net_code.FlashlightShine((mouse_x, mouse_y)))
             
             elif self.role == settings.ROLE_SHOOTER:
-                self.board.unmask(last_unmask_x, last_unmask_y)
+                self.board.unmask(last_unmask_x, last_unmask_y, 80)
             
             #Start drawing:
             self.screen.fill((0,0,0))
             self.screen.blit(self.board.unmasked_image, self.board.rect)
             
-            #The shooter only sees zombies of the masked image (self.board.image) is unmasked:
-            if self.role == settings.ROLE_SHOOTER:
-                self.render_zombies()
-                
-            self.screen.blit(self.board.image, self.board.rect)
+            self.render_zombies()
             
-            ############### ==!!!!!
-            if self.role != settings.ROLE_LIGHTER:
-                self.render_zombies()
+            self.screen.blit(self.board.image, self.board.rect)
             
             self.player.turn(mouse_x, mouse_y)
             self.player.step()

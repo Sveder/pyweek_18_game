@@ -43,7 +43,8 @@ class Zombie(Actor.Actor):
         """
         Oh no I'm dead.
         """
-        if self.dead: return 
+        if self.dead or self.dying: return
+        
         utilities.log("%s has been shot!" % self.name)
         self.dying = True
         pygame.mixer.Sound(data.filepath(settings.ZOMBIE_DEATH_SOUND)).play()

@@ -7,7 +7,7 @@ import pygame
 import settings
 import utilities
 
-BRIGHTEN_RECT_TEMP = 60
+BRIGHTEN_RECT_TEMP = 120
 HALF_RECT_TEMP = BRIGHTEN_RECT_TEMP / 2
 
 class Board(pygame.sprite.Sprite):
@@ -47,23 +47,28 @@ class Board(pygame.sprite.Sprite):
         pygame.time.set_timer(settings.SCHEDULE_AMBIENT_EVENT, 2 * 60 * 1000)
         
     
-    def unmask(self, near_x, near_y):
+    def unmask(self, near_x, near_y, radius=BRIGHTEN_RECT_TEMP):
         """
         Brighten (unmask) the area near the given coordinates.
         """
-        self._actual_unmask(self.last_brighten, self.masked_image)        
+        self._actual_unmask(self.last_brighten, self.masked_image, radius=radius)
         
-        #self._actual_unmask((near_x, near_y), self.unmasked_image)
-        brighten_rect = pygame.draw.circle(self.image, (255, 255,0), (near_x, near_y), HALF_RECT_TEMP)
+        brighten_rect = pygame.draw.circle(self.image, (255, 255,0), (near_x, near_y), radius/2)
         self.game.dirty_rects.append(brighten_rect)
         
         self.last_brighten = (near_x, near_y)
     
 
-    def _actual_unmask(self, (near_x, near_y), surface):
-        rect = pygame.Rect(near_x - HALF_RECT_TEMP, near_y - HALF_RECT_TEMP, BRIGHTEN_RECT_TEMP, BRIGHTEN_RECT_TEMP)
+    def _actual_unmask(self, (near_x, near_y), surface, radius=BRIGHTEN_RECT_TEMP):
+        rect = pygame.Rect(near_x - radius/2, near_y - radius/2, radius, radius)
         self.image.blit(surface, rect, rect)
         self.game.dirty_rects.append(rect)
+    
+    
+    def triangular_unmask(self, near_x, near_y, player):
+        p_center = player.rect.center
+        
+        
         
         
     def start_music(self):
