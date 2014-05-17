@@ -47,13 +47,17 @@ class Board(pygame.sprite.Sprite):
         pygame.time.set_timer(settings.SCHEDULE_AMBIENT_EVENT, 2 * 60 * 1000)
         
     
-    def unmask(self, near_x, near_y, radius=BRIGHTEN_RECT_TEMP):
+    def unmask(self, near_x, near_y, radius=BRIGHTEN_RECT_TEMP, is_lighter=False):
         """
         Brighten (unmask) the area near the given coordinates.
         """
         self._actual_unmask(self.last_brighten, self.masked_image, radius=radius)
         
         brighten_rect = pygame.draw.circle(self.image, (255, 255,0), (near_x, near_y), radius/2)
+        
+        if is_lighter:
+            brighten_rect = pygame.draw.circle(self.image, (50, 0, 0), (near_x, near_y), 40)
+            brighten_rect = pygame.draw.circle(self.image, (255, 255,0), (near_x, near_y), 38)
         self.game.dirty_rects.append(brighten_rect)
         
         self.last_brighten = (near_x, near_y)

@@ -270,13 +270,14 @@ class Game:
             
             #If the mouse moved and you are the lighter, fire a network event:
             if (self.role == settings.ROLE_LIGHTER) and (last_mouse_y != mouse_y or last_mouse_x != mouse_x):
-                self.board.unmask(mouse_x, mouse_y)
+                self.board.unmask(mouse_x, mouse_y, is_lighter=True)
                 #But not too often, so that not to overwhelm the network:
                 if not counter % 2:
                     self.net_object.send_event(net_code.FlashlightShine((mouse_x, mouse_y)))
             
             elif self.role == settings.ROLE_SHOOTER:
                 self.board.unmask(last_unmask_x, last_unmask_y, 80)
+                self.board.unmask(self.player.rect.center[0], self.player.rect.center[1], 150)
             
             #Start drawing:
             self.screen.fill((0,0,0))
