@@ -37,6 +37,10 @@ class Player(Actor.PlayerActor):
         self.bullet_count -= 1        
         pygame.mixer.Sound(data.filepath(settings.PLAYER_SHOT_SOUND)).play()
         self.game.gun_particles(self.rect.center, self._cur_angle)
+    
+    def reload(self):
+        pygame.mixer.Sound(data.filepath(settings.PLAYER_RELOAD_SOUND)).play()
+        self.bullet_count = settings.BULLET_INITIAL_COUNT
         
     
     def hit(self, zombie):

@@ -57,6 +57,9 @@ http://soundbible.com/1998-Gun-Fire.html
 empty_shot.ogg - "Empty Gun Shot" by KlawyKogut from:
 http://freesound.org/people/KlawyKogut/sounds/154934/#
 
+reload.ogg - "Gun Sounds : REALoaded » Firearm Reloading 2" by davdud101:
+http://freesound.org/people/davdud101/sounds/150500/
+
 zombie sprites - "Zombie RPG sprites" by Curt from:
 http://opengameart.org/content/zombie-rpg-sprites
 "Curt - cjc83486 http://opengameart.org/content/zombie-rpg-sprites"

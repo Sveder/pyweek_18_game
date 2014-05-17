@@ -37,6 +37,8 @@ class Game:
         self.zombies_killed = 0
         self.scale_zombies = 1
         
+        self.buttons_pressed = (0, 0, 0)
+        
         #Remote server communicates using sockets and the net code adds events to this list:
         self.event_list = []
         self.event_list_lock = threading.Lock()
@@ -229,13 +231,23 @@ class Game:
                 if (event.type == pygame.QUIT) or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                     return
                 
-                if self.role == settings.ROLE_SHOOTER and event.type == pygame.MOUSEBUTTONUP:
-                    mouse_pos = pygame.mouse.get_pos()
-                    if self.player.rect.collidepoint(*mouse_pos):
-                        self.player.joy()
-                        continue
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.buttons_pressed = pygame.mouse.get_pressed()
                     
-                    self.shoot(mouse_pos, send_event=True)
+                if self.role == settings.ROLE_SHOOTER and event.type == pygame.MOUSEBUTTONUP:
+                    print self.buttons_pressed
+                    if self.buttons_pressed[0]:
+                        mouse_pos = pygame.mouse.get_pos()
+                        if self.player.rect.collidepoint(*mouse_pos):
+                            self.player.joy()
+                            continue
+                        
+                        self.shoot(mouse_pos, send_event=True)
+                    
+                    if self.buttons_pressed[2]:
+                        self.player.reload()
+                    
+                    self.buttons_pressed = (0,0,0)
                 
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_z:
                     self.spawn_zombie(send_event=True)
