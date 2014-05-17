@@ -67,7 +67,7 @@ class Zombie(Actor.Actor):
             return
         
         new_x = self.precise_center[0]
-        step = self.speed * elapsed
+        step = self.speed * elapsed * self.game.scale_zombies 
         
         if toward_x > self.precise_center[0]:
             new_x = self.precise_center[0] + step

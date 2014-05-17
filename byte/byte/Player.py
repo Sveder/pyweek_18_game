@@ -20,6 +20,8 @@ class Player(Actor.PlayerActor):
         Actor.PlayerActor.__init__(self, game, settings.PLAYER_IMAGE_PATH_FORMAT, game.get_player_start_position, 15, (0,0,0))
                 
         self.role = role
+        self.life = settings.PLAYER_LIFE
+        self.alive = True
         self.is_shooting = False
         self.bullet_count = settings.BULLET_INITIAL_COUNT
         
@@ -42,7 +44,12 @@ class Player(Actor.PlayerActor):
         Player was bitten by zombie.
         """
         zombie.die()
-        pygame.mixer.Sound(data.filepath(settings.PLAYER_HIT_SOUND)).play()
+        if self.life == 0:
+            pygame.mixer.Sound(data.filepath(settings.PLAYER_DEATH_SOUND)).play()
+            self.alive = False
+        else:
+            pygame.mixer.Sound(data.filepath(settings.PLAYER_HIT_SOUND)).play()
+        self.life -= 1
         
 
     def step(self):

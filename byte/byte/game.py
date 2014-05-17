@@ -34,6 +34,9 @@ class Game:
         self.particle_gen = None
         self.should_draw_particles = False
         
+        self.zombies_killed = 0
+        self.scale_zombies = 1
+        
         #Remote server communicates using sockets and the net code adds events to this list:
         self.event_list = []
         self.event_list_lock = threading.Lock()
@@ -159,6 +162,12 @@ class Game:
         log("Shots fired at zombies: %s" % str(where))
         for z in self.zombies:
             if z.rect.collidepoint(*where):
+                self.zombies_killed += 1
+                
+                if self.zombies_killed > settings.SCALE_ZOMBIES_AFTER:
+                    self.zombies_killed = 0
+                    self.scale_zombies += 0.2
+                    
                 z.die()
                 
       
@@ -207,13 +216,14 @@ class Game:
 
                 self.event_list = []
                 
-            if not self.net_object.is_connected:
-                continue
+            ##if not self.net_object.is_connected:
+            ##    continue
             
             if self.zombies == []:
                 #Spawn a zombie for good measure:
-                if self.role == settings.ROLE_LIGHTER:
-                    self.spawn_zombie(send_event=True)
+                if self.is_server:
+                    for i in xrange(int(round((self.scale_zombies - 1) * 2 ) + 1)):
+                        self.spawn_zombie(send_event=True)
             
             for event in pygame.event.get():
                 if (event.type == pygame.QUIT) or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
@@ -265,7 +275,8 @@ class Game:
                 
             self.screen.blit(self.board.image, self.board.rect)
             
-            if self.role == settings.ROLE_LIGHTER:
+            ############### ==!!!!!
+            if self.role != settings.ROLE_LIGHTER:
                 self.render_zombies()
             
             self.player.turn(mouse_x, mouse_y)

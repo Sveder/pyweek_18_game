@@ -8,7 +8,7 @@ pygame.display.set_caption("fire gun")
 clock = pygame.time.Clock()
 
 wheel = PyIgnition.ParticleEffect(screen, (0, 0), (600, 600))
-flame = wheel.CreateSource((300, 300), initspeed = 20.0, initdirection = 0.0, initspeedrandrange = 0.0, initdirectionrandrange = 0.5, particlesperframe = 3, particlelife = 5, drawtype = PyIgnition.DRAWTYPE_CIRCLE, colour = (200, 0, 0), length = 2.0)
+flame = wheel.CreateSource((300, 300), initspeed = 20.0, initdirection = 0.0, initspeedrandrange = 0.0, initdirectionrandrange = 0.5, particlesperframe = 3, particlelife = 5, drawtype = PyIgnition.DRAWTYPE_CIRCLE, colour = (150, 0, 0), radius = 2.0)
 #sparks = wheel.CreateSource((300, 300), initspeed = 1.0, initdirection = 0.0, initspeedrandrange = 0.9, initdirectionrandrange = 3.141592653, particlesperframe = 1, particlelife = 300, genspacing = 3, drawtype = PyIgnition.DRAWTYPE_IMAGE, imagepath = "spark.png")
 wheel.CreateDirectedGravity(strength = 0.05, direction = [0, 1])
 
