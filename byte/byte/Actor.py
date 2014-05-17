@@ -43,13 +43,12 @@ class Actor(pygame.sprite.Sprite):
         """
         angle_to_pointer = math.degrees(math.atan2(towards_y - self.rect.center[1], towards_x - self.rect.center[0]))
 
-
         #Append the rect to move/delete:
         old_rect = self.rect
         self.game.dirty_rects.append(old_rect)
         
         #Find the new angle and replace the image:
-        self._cur_angle = int(round(-angle_to_pointer)) / self.sprite_count + 90
+        self._cur_angle = int(round(-angle_to_pointer)) + 90
         self._cur_angle %= self.sprite_count
         self.image = self.angle_pictures[self._cur_angle]
         
@@ -70,18 +69,21 @@ class PlayerActor(pygame.sprite.Sprite):
         
         self.game = game
         self.color_key = color_key
-        
+        self.angle_position = []
         #load all the angle images:
         self.sprite_count = sprite_count
         self.angle_pictures = []
         for i in xrange(self.sprite_count):
             sprite_sheet = utilities.spritesheet(data.filepath(file_path_format % i))
-            self.angle_pictures.append(sprite_sheet)
+            position = settings.SPRITE_PLAYER_POSITIONS[i]
+            for j in xrange(360 / 15):
+                self.angle_pictures.append(sprite_sheet)
+                self.angle_position.append(position)
         
         self._cur_angle = 0
         self.shot_frame = 0
         
-        positions = settings.SPRITE_PLAYER_POSITIONS[self._cur_angle][int(self.shot_frame)]
+        positions = self.angle_position[self._cur_angle][int(self.shot_frame)]
         rect = pygame.Rect(positions[0], 0, positions[1] - positions[0], 51)
         self.image = self.angle_pictures[self._cur_angle].image_at(rect, colorkey=self.color_key)
         
@@ -97,16 +99,15 @@ class PlayerActor(pygame.sprite.Sprite):
         """
         angle_to_pointer = math.degrees(math.atan2(towards_y - self.rect.center[1], towards_x - self.rect.center[0]))
 
-
         #Append the rect to move/delete:
         old_rect = self.rect
         self.game.dirty_rects.append(old_rect)
         
         #Find the new angle and replace the image:
-        self._cur_angle = int(round(-angle_to_pointer)) / self.sprite_count + 90
-        self._cur_angle %= self.sprite_count
+        self._cur_angle = int(round(-angle_to_pointer))
+        self._cur_angle %= 360
         
-        positions = settings.SPRITE_PLAYER_POSITIONS[self._cur_angle][int(self.shot_frame)]
+        positions = self.angle_position[self._cur_angle][int(self.shot_frame)]
         rect = pygame.Rect(positions[0], 0, positions[1] - positions[0], 51)
         self.image = self.angle_pictures[self._cur_angle].image_at(rect, colorkey=self.color_key)
         

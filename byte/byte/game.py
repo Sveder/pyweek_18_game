@@ -268,7 +268,7 @@ class Game:
             last_mouse_y = mouse_y
             last_mouse_x = mouse_x
             
-            #print self.clock.get_fps()
+            print self.clock.get_fps()
 
 
     def get_player_start_position(self):
