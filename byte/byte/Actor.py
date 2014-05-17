@@ -81,11 +81,11 @@ class PlayerActor(pygame.sprite.Sprite):
         self._cur_angle = 0
         self.shot_frame = 0
         
-        positions = settings.SPRITE_PLAYER_POSITIONS[self._cur_angle][self.shot_frame]
-        rect = pygame.Rect(positions[0], 0, positions[1], 51)
+        positions = settings.SPRITE_PLAYER_POSITIONS[self._cur_angle][int(self.shot_frame)]
+        rect = pygame.Rect(positions[0], 0, positions[1] - positions[0], 51)
         self.image = self.angle_pictures[self._cur_angle].image_at(rect, colorkey=self.color_key)
         
-        self.rect = self.image.get_rect()
+        self.rect = rect
         
         if start_position_func:
             self.rect.center = start_position_func()
@@ -106,14 +106,12 @@ class PlayerActor(pygame.sprite.Sprite):
         self._cur_angle = int(round(-angle_to_pointer)) / self.sprite_count + 90
         self._cur_angle %= self.sprite_count
         
-        positions = settings.SPRITE_PLAYER_POSITIONS[self._cur_angle][self.shot_frame]
-        rect = pygame.Rect(positions[0], 0, positions[1], 51)
-        
+        positions = settings.SPRITE_PLAYER_POSITIONS[self._cur_angle][int(self.shot_frame)]
+        rect = pygame.Rect(positions[0], 0, positions[1] - positions[0], 51)
         self.image = self.angle_pictures[self._cur_angle].image_at(rect, colorkey=self.color_key)
         
-        self.rect = self.image.get_rect()
+        self.rect = rect
         self.rect.center = old_rect.center
-
     
 
 class SpriteActor(pygame.sprite.Sprite):

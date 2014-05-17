@@ -254,6 +254,7 @@ class Game:
                 self.render_zombies()
             
             self.player.turn(mouse_x, mouse_y)
+            self.player.step()
             self.screen.blit(self.player.image, self.player.rect)
             
             self.screen.blit(self.bullets.render_bullets(self.player.bullet_count), settings.BULLET_COUNTER_LOCATION)

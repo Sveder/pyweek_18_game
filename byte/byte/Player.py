@@ -20,15 +20,18 @@ class Player(Actor.PlayerActor):
         Actor.PlayerActor.__init__(self, game, settings.PLAYER_IMAGE_PATH_FORMAT, game.get_player_start_position, 15, (0,0,0))
                 
         self.role = role
+        self.is_shooting = False
         self.bullet_count = settings.BULLET_INITIAL_COUNT
         
     def shoot(self, at_x, at_y):
         utilities.log("Player (%s) is shooting at: %s, %s" % (self.role, at_x, at_y))
+        
         if self.bullet_count == 0:
             utilities.log("Out of bullets")
             pygame.mixer.Sound(data.filepath(settings.PLAYER_EMPTY_SHOT_SOUND)).play()
             return
         
+        self.is_shooting = True
         self.bullet_count -= 1        
         pygame.mixer.Sound(data.filepath(settings.PLAYER_SHOT_SOUND)).play()
         
@@ -41,6 +44,14 @@ class Player(Actor.PlayerActor):
         pygame.mixer.Sound(data.filepath(settings.PLAYER_HIT_SOUND)).play()
         
 
+    def step(self):
+        elapsed = self.game.clock.get_time() / 1000.0
+        
+        if self.is_shooting:
+            self.shot_frame += 1 * elapsed * 10
+            if self.shot_frame >= 4:
+                self.is_shooting = False
+                self.shot_frame = 0
         
         
 class Shooter(Player):
