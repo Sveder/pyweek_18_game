@@ -65,6 +65,9 @@ AMAZING player sprites - "tmim Heroine - Bleed's Game Art" by bleed from:
 http://opengameart.org/content/tmim-heroine-bleeds-game-art
 Visit his portfolio: http://remusprites.carbonmade.com/
 
+happy_happy_joy_joy.ogg - (definitely not a) "Suicide note" by 11linda:
+http://freesound.org/people/11linda/sounds/181986/
+
 
 
 
